@@ -1,8 +1,5 @@
 package com.testenvironment.multimonitor.gui;
 
-import com.testenvironment.multimonitor.Config;
-import com.testenvironment.multimonitor.experiment.Logger;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -35,8 +32,8 @@ public class ExperimentFrame extends JFrame {
                 //f.setResizable(false);
                 f.setLayout(new BorderLayout());
                 f.setTitle("Monitor " + seq);
-                f.setExtendedState(Frame.MAXIMIZED_BOTH);
-                //f.setSize(600, 600);
+                //f.setExtendedState(Frame.MAXIMIZED_BOTH);
+                f.setSize(600, 600);
                 f.setVisible(true);
                 frames.add(f);
 

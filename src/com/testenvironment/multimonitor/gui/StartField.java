@@ -9,11 +9,7 @@ public class StartField extends JComponent {
 
     int width, height;
     int tlX, tlY; //Top Left x, y
-
-
-
     int centerX, centerY;
-
     Color color;
 
     public StartField(int centerX, int centerY, int width, int height) {
@@ -40,6 +36,10 @@ public class StartField extends JComponent {
     /*
        Getter's & Setter's
     */
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
 
     public int getWidth() {
         return width;

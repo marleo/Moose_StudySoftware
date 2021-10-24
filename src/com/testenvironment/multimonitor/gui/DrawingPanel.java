@@ -20,6 +20,7 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
     private final JFrame startFrame;
     private final JFrame endFrame;
     private final Logger logger;
+    private Color startColor;
 
     public DrawingPanel(Experiment experiment, ArrayList<JComponent> drawables) {
         JFrame endFrame1;
@@ -36,6 +37,7 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
         this.logger = Logger.getLogger();
+        this.startColor = Config.STARTFIELD_COLOR;
     }
 
     @Override
@@ -68,7 +70,7 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
 
                 this.setBackground(new Color(230, 255, 230));
 
-                g2d.setColor(Config.STARTFIELD_COLOR);
+                g2d.setColor(startColor);
                 g2d.fillRect(c, d, a, b);
                 g2d.setColor(Config.STARTFIELD_COLOR_TEXT);
                 g2d.setFont(new Font(Config.FONT_STYLE, Font.PLAIN, Config.STARTFIELD_FONT_SIZE));
@@ -88,6 +90,7 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
+
     }
 
     /*
@@ -109,6 +112,8 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
                     if (!testStart) {
                         testTime = System.currentTimeMillis();
                         testStart = true;
+
+                        startColor = Config.STARTFIELD_PRESSED_COLOR;
 
                         logger.setTrialStartTime(testTime);
                         logger.setStartPosX(dr.getX());
@@ -137,6 +142,8 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
                     if (testStart) {
                         long testFin = System.currentTimeMillis();
                         long testFinishedTime = System.currentTimeMillis() - testTime;
+
+
 
                         logger.setTrialEndTime(testFin);
                         logger.setTrialTime(testFinishedTime);
