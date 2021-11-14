@@ -5,10 +5,13 @@ import com.testenvironment.multimonitor.experiment.Experiment;
 import com.testenvironment.multimonitor.experiment.Logger;
 import com.testenvironment.multimonitor.experiment.MouseLogger;
 
+import javax.sound.sampled.*;
 import javax.swing.*;
 import javax.swing.event.MouseInputListener;
 import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -62,7 +65,7 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
 
         g2d.setColor(Config.INFOTEXT_COLOR);
         g2d.setFont(new Font(Config.FONT_STYLE, Font.PLAIN, Config.INFOTEXT_FONT_SIZE));
-        g2d.drawString("Test: " + experiment.getRemainingTests() + " of " + Config.NUM_TRIALS, Config.INFOTEXT_X, Config.INFOTEXT_Y);
+        g2d.drawString("Trial: " + experiment.getRemainingTests() + " of " + Config.NUM_TRIALS, Config.INFOTEXT_X, Config.INFOTEXT_Y);
 
         for (JComponent draw : drawables) {
             if (draw instanceof StartField) {
@@ -144,6 +147,8 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
                 isInGoal = ((GoalCircle) dr).isInside(e.getX(), e.getY());
                 if (isInGoal) {
                     if (testStart) {
+                        playSuccess();
+
                         long testFin = System.currentTimeMillis();
                         long testFinishedTime = System.currentTimeMillis() - testTime;
 
@@ -170,6 +175,8 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
                     }
                 } else {
                     if(testStart) {
+                        playError();
+
                         long testFin = System.currentTimeMillis();
                         long testFinishedTime = System.currentTimeMillis() - testTime;
 
@@ -259,5 +266,33 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
 
     @Override
     public void mouseDragged(MouseEvent e) {
+    }
+
+    private void playSuccess() {
+        AudioInputStream successIn;
+        Clip clip;
+
+        try {
+            successIn = AudioSystem.getAudioInputStream(new File(Config.SOUND_SUCCESS_PATH));
+            clip = AudioSystem.getClip();
+            clip.open(successIn);
+            clip.start();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void playError() {
+        AudioInputStream errorIn;
+        Clip clip;
+
+        try {
+            errorIn = AudioSystem.getAudioInputStream(new File(Config.SOUND_ERROR_PATH));
+            clip = AudioSystem.getClip();
+            clip.open(errorIn);
+            clip.start();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 }

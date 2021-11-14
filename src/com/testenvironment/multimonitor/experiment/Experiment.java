@@ -21,7 +21,6 @@ public class Experiment extends JPanel {
     private final MouseLogger mouseLogger;
 
     public Experiment(ArrayList<JFrame> frames) {
-        Config.USER_ID = Config.USER_ID++;
         this.generator = new Random(100);
         this.numTrials = Config.NUM_TRIALS;
         this.count = 0;

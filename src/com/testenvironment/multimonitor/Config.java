@@ -12,6 +12,8 @@ public class Config {
     public static String MOUSE_LOG = "mouselog_";
     public static String MOOSE_LOG = "moose_log_";
     public static String TESTTYPE = "NO_MOOSE";
+    public static String SOUND_ERROR_PATH = "sounds/error.wav";
+    public static String SOUND_SUCCESS_PATH = "sounds/success.wav";
     /**
      * Test
      */
