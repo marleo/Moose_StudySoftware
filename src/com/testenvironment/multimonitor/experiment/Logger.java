@@ -2,6 +2,7 @@ package com.testenvironment.multimonitor.experiment;
 
 import com.testenvironment.multimonitor.Config;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.nio.file.Files;
@@ -14,6 +15,7 @@ public class Logger {
     private static Logger instance = null;
     private PrintWriter logFile;
     private String testtype;
+    private boolean headerWritten;
 
     private int participant;
     private int trialNumber;
@@ -23,6 +25,8 @@ public class Logger {
     private int startMonitor;
     private int startMonitorWidth;
     private int startMonitorHeight;
+    private int startWindowWidth;
+    private int startWindowHeight;
     private int startPosX;
     private int startPosY;
     private int startCenterX;
@@ -30,6 +34,8 @@ public class Logger {
     private int targetMonitor;
     private int targetMonitorWidth;
     private int targetMonitorHeight;
+    private int targetWindowWidth;
+    private int targetWindowHeight;
     private int targetPosX;
     private int targetPosY;
     private int targetCenterX;
@@ -45,8 +51,8 @@ public class Logger {
 
 
     private Logger() {
-        createLogFile(Config.LOG_NAME);
-        writeToLog(createHeaderString(), Config.LOG_NAME);
+        createLogFile();
+        writeToLog(createHeaderString());
         this.participant = Config.USER_ID;
         this.trialNumber = 0;
         this.blockNumber = 0;
@@ -56,6 +62,8 @@ public class Logger {
         this.startMonitor = 0;
         this.startMonitorWidth = 0;
         this.startMonitorHeight = 0;
+        this.startWindowWidth = 0;
+        this.startWindowHeight = 0;
         this.startPosX = 0;
         this.startPosY = 0;
         this.startCenterX = 0;
@@ -63,6 +71,8 @@ public class Logger {
         this.targetMonitor = 0;
         this.targetMonitorWidth = 0;
         this.targetMonitorHeight = 0;
+        this.targetWindowWidth = 0;
+        this.targetWindowHeight = 0;
         this.targetPosX = 0;
         this.targetPosY = 0;
         this.targetCenterX = 0;
@@ -84,19 +94,16 @@ public class Logger {
         return instance;
     }
 
-    public void createLogFile(String logName) {
+    public void createLogFile() {
         try {
-            logFile = new PrintWriter(new FileWriter(Config.LOG_PATH + logName + Config.USER_ID + ".txt"));
+            while(new File(Config.LOG_PATH + Config.MOOSE_LOG + Config.USER_ID + ".txt").exists()) {
+                Config.USER_ID ++;
+            }
+            logFile = new PrintWriter(new FileWriter(Config.LOG_PATH + Config.MOOSE_LOG + Config.USER_ID + ".txt"));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-//    public void logMouseEvent(MouseEvent e) {
-//        if(logFile != null) {
-//            logFile.println(e.paramString());
-//        }
-//    }
 
     private String createHeaderString() {
         return "participant" + ";" +
@@ -104,10 +111,12 @@ public class Logger {
                 "blockNumber" + ";" +
                 "distancePx" + ";" +
                 "movementDirection" + ";" +
-                "testtype" + ";" +
+                "testType" + ";" +
                 "startMonitor" + ";" +
                 "startMonitorWidth" + ";" +
                 "startMonitorHeight" + ";" +
+                "startWindowWidth" + ";" +
+                "startWindowHeight" + ";" +
                 "startPosX" + ";" +
                 "startPosY" + ";" +
                 "startCenterX" + ";" +
@@ -115,6 +124,8 @@ public class Logger {
                 "targetMonitor" + ";" +
                 "targetMonitorWidth" + ";" +
                 "targetMonitorHeight" + ";" +
+                "targetWindowWidth" + ";" +
+                "targetWindowHeight" + ";" +
                 "targetPosX" + ";" +
                 "targetPosY" + ";" +
                 "targetCenterX" + ";" +
@@ -139,6 +150,8 @@ public class Logger {
                 startMonitor + ";" +
                 startMonitorWidth + ";" +
                 startMonitorHeight + ";" +
+                startWindowWidth + ";" +
+                startWindowHeight + ";" +
                 startPosX + ";" +
                 startPosY + ";" +
                 startCenterX + ";" +
@@ -146,6 +159,8 @@ public class Logger {
                 targetMonitor + ";" +
                 targetMonitorWidth + ";" +
                 targetMonitorHeight + ";" +
+                targetWindowWidth + ";" +
+                targetWindowHeight + ";" +
                 targetPosX + ";" +
                 targetPosY + ";" +
                 targetCenterX + ";" +
@@ -158,11 +173,11 @@ public class Logger {
                 trialStartTime + ";" +
                 trialEndTime + ";" +
                 trialTime;
-        writeToLog(logString, Config.LOG_NAME);
+        writeToLog(logString);
     }
 
-    public void writeToLog(String log, String logName) {
-        String fileName = Config.LOG_PATH + logName + Config.USER_ID + ".txt";
+    public void writeToLog(String log) {
+        String fileName = Config.LOG_PATH + Config.MOOSE_LOG + Config.USER_ID + ".txt";
         log = log + "\n";
         Path path = Paths.get(fileName);
 
@@ -400,6 +415,38 @@ public class Logger {
 
     public void setTargetMonitorHeight(int targetMonitorHeight) {
         this.targetMonitorHeight = targetMonitorHeight;
+    }
+
+    public int getStartWindowWidth() {
+        return startWindowWidth;
+    }
+
+    public void setStartWindowWidth(int startWindowWidth) {
+        this.startWindowWidth = startWindowWidth;
+    }
+
+    public int getStartWindowHeight() {
+        return startWindowHeight;
+    }
+
+    public void setStartWindowHeight(int startWindowHeight) {
+        this.startWindowHeight = startWindowHeight;
+    }
+
+    public int getTargetWindowWidth() {
+        return targetWindowWidth;
+    }
+
+    public void setTargetWindowWidth(int targetWindowWidth) {
+        this.targetWindowWidth = targetWindowWidth;
+    }
+
+    public int getTargetWindowHeight() {
+        return targetWindowHeight;
+    }
+
+    public void setTargetWindowHeight(int targetWindowHeight) {
+        this.targetWindowHeight = targetWindowHeight;
     }
 
 

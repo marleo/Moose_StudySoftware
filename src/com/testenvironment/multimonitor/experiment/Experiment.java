@@ -18,6 +18,7 @@ public class Experiment extends JPanel {
     private final int numTrials;
     private int count;
     private final Logger logger;
+    private final MouseLogger mouseLogger;
 
     public Experiment(ArrayList<JFrame> frames) {
         Config.USER_ID = Config.USER_ID++;
@@ -25,8 +26,7 @@ public class Experiment extends JPanel {
         this.numTrials = Config.NUM_TRIALS;
         this.count = 0;
         this.logger = Logger.getLogger();
-        logger.createLogFile(Config.MOUSE_LOG);
-//        logger.createLogFile(Config.TIMING_LOG);
+        this.mouseLogger = MouseLogger.getMouseLogger();
         int startFrame = generator.nextInt(frames.size());
         int endFrame = generator.nextInt(frames.size());
         while (endFrame == startFrame) {
@@ -49,6 +49,7 @@ public class Experiment extends JPanel {
         count++;
         if (count >= numTrials) {
             logger.endLog();
+            mouseLogger.endLog();
             System.exit(0);
         }
         startFrame.getContentPane().removeAll();

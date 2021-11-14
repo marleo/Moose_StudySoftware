@@ -3,6 +3,7 @@ package com.testenvironment.multimonitor.gui;
 import com.testenvironment.multimonitor.Config;
 import com.testenvironment.multimonitor.experiment.Experiment;
 import com.testenvironment.multimonitor.experiment.Logger;
+import com.testenvironment.multimonitor.experiment.MouseLogger;
 
 import javax.swing.*;
 import javax.swing.event.MouseInputListener;
@@ -20,6 +21,7 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
     private final JFrame startFrame;
     private final JFrame endFrame;
     private final Logger logger;
+    private final MouseLogger mouseLogger;
     private Color startColor;
 
     public DrawingPanel(Experiment experiment, ArrayList<JComponent> drawables) {
@@ -37,6 +39,7 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
         this.logger = Logger.getLogger();
+        this.mouseLogger = MouseLogger.getMouseLogger();
         this.startColor = Config.STARTFIELD_COLOR;
     }
 
@@ -83,14 +86,20 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
         }
     }
 
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-    }
-
     @Override
     public void mousePressed(MouseEvent e) {
+        JFrame currentFrame = (JFrame) SwingUtilities.getRoot(this);
 
+        mouseLogger.setMonitorNr(Integer.parseInt(currentFrame.getTitle().replaceAll("[^0-9]", "")));
+        mouseLogger.setWindowWidth(currentFrame.getWidth());
+        mouseLogger.setWindowHeight(currentFrame.getHeight());
+        mouseLogger.setMonitorWidth(currentFrame.getGraphicsConfiguration().getDevice().getDisplayMode().getWidth());
+        mouseLogger.setMonitorHeight(currentFrame.getGraphicsConfiguration().getDevice().getDisplayMode().getHeight());
+        mouseLogger.setMouseX(e.getX());
+        mouseLogger.setMouseY(e.getY());
+        mouseLogger.setMousePressed(1);
+
+        mouseLogger.generateLogString();
     }
 
     /*
@@ -101,8 +110,10 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
         boolean isInStart, isInGoal;
         JFrame currentFrame = (JFrame) SwingUtilities.getRoot(this);
         String monitorName = currentFrame.getTitle();
-        int monitorWidth = currentFrame.getWidth();
-        int monitorHeight = currentFrame.getHeight();
+        int windowWidth = currentFrame.getWidth();
+        int windowHeight = currentFrame.getHeight();
+        int monitorWidth = currentFrame.getGraphicsConfiguration().getDevice().getDisplayMode().getWidth(); //Get Monitorwidth where currentFrame is placed
+        int monitorHeight = currentFrame.getGraphicsConfiguration().getDevice().getDisplayMode().getHeight(); //Get Monitorheight where currentFrame is placed
 
         for (JComponent dr : drawables) {
             if (dr instanceof StartField) {
@@ -123,17 +134,10 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
                         logger.setStartPointPressedX(e.getX());
                         logger.setStartPointPressedY(e.getY());
                         logger.setStartMonitor(Integer.parseInt(monitorName.replaceAll("[^0-9]", "")));
-                        logger.setStartMonitorWidth(monitorWidth);
+                        logger.setStartWindowWidth(windowWidth);
+                        logger.setStartWindowHeight(windowHeight);
                         logger.setStartMonitorHeight(monitorHeight);
-
-//                      logger.writeToLog(e.paramString(), Config.MOUSE_LOG);
-//                      logger.writeToLog("Start at: X: "
-//                                        + dr.getX()
-//                                        + " Y: "
-//                                        + dr.getY()
-//                                        + " on "
-//                                        + monitorName + " "
-//                                , Config.TIMING_LOG);
+                        logger.setStartMonitorWidth(monitorWidth);
                     }
                 }
             } else if (dr instanceof GoalCircle) {
@@ -142,8 +146,6 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
                     if (testStart) {
                         long testFin = System.currentTimeMillis();
                         long testFinishedTime = System.currentTimeMillis() - testTime;
-
-
 
                         logger.setTrialEndTime(testFin);
                         logger.setTrialTime(testFinishedTime);
@@ -154,6 +156,8 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
                         logger.setStartPointPressedX(e.getX());
                         logger.setStartPointPressedY(e.getY());
                         logger.setTargetMonitor(Integer.parseInt(monitorName.replaceAll("[^0-9]", "")));
+                        logger.setTargetWindowWidth(windowWidth);
+                        logger.setTargetWindowHeight(windowHeight);
                         logger.setTargetMonitorWidth(monitorWidth);
                         logger.setTargetMonitorHeight(monitorHeight);
                         logger.setHit(1);
@@ -161,17 +165,7 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
                         System.out.println("Test finished in: "
                                 + testFinishedTime
                                 + "ms");
-//                        logger.writeToLog(e.paramString(), Config.MOUSE_LOG);
                         experiment.drawFrames(startFrame, endFrame);
-//                        logger.writeToLog("Goal at: X: "
-//                                        + dr.getX()
-//                                        + " Y: " + dr.getY()
-//                                        + " on "
-//                                        + monitorName + "\n"
-//                                        + testFinishedTime
-//                                        + "ms"
-//                                        + "\n"
-//                                , Config.TIMING_LOG);
                         logger.generateLogString();
                     }
                 } else {
@@ -193,41 +187,77 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
                         System.out.println("Test finished in: "
                                 + testFinishedTime
                                 + "ms");
-//                        logger.writeToLog(e.paramString(), Config.MOUSE_LOG);
-//                        logger.writeToLog("Goal at: X: "
-//                                        + dr.getX()
-//                                        + " Y: " + dr.getY()
-//                                        + " on "
-//                                        + monitorName + "\n"
-//                                        + testFinishedTime
-//                                        + "ms"
-//                                        + "\n"
-//                                , Config.TIMING_LOG);
                         logger.generateLogString();
                     }
                 }
             }
-            logger.writeToLog(e.paramString(), Config.MOUSE_LOG);
+            mouseLogger.setMonitorNr(Integer.parseInt(monitorName.replaceAll("[^0-9]", "")));
+            mouseLogger.setMonitorWidth(monitorWidth);
+            mouseLogger.setMonitorHeight(monitorHeight);
+            mouseLogger.setMouseX(e.getX());
+            mouseLogger.setMouseY(e.getY());
+            mouseLogger.setMouseReleased(1);
+
+            mouseLogger.generateLogString();
         }
 
     }
 
     @Override
     public void mouseEntered(MouseEvent e) {
+        JFrame currentFrame = (JFrame) SwingUtilities.getRoot(this);
+
+        mouseLogger.setMonitorNr(Integer.parseInt(currentFrame.getTitle().replaceAll("[^0-9]", "")));
+        mouseLogger.setWindowWidth(currentFrame.getWidth());
+        mouseLogger.setWindowHeight(currentFrame.getHeight());
+        mouseLogger.setMonitorWidth(currentFrame.getGraphicsConfiguration().getDevice().getDisplayMode().getWidth());
+        mouseLogger.setMonitorHeight(currentFrame.getGraphicsConfiguration().getDevice().getDisplayMode().getHeight());
+        mouseLogger.setMouseX(e.getX());
+        mouseLogger.setMouseY(e.getY());
+        mouseLogger.setMouseEntered(1);
+
+        mouseLogger.generateLogString();
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
+        JFrame currentFrame = (JFrame) SwingUtilities.getRoot(this);
 
-    }
+        mouseLogger.setMonitorNr(Integer.parseInt(currentFrame.getTitle().replaceAll("[^0-9]", "")));
+        mouseLogger.setWindowWidth(currentFrame.getWidth());
+        mouseLogger.setWindowHeight(currentFrame.getHeight());
+        mouseLogger.setMonitorWidth(currentFrame.getGraphicsConfiguration().getDevice().getDisplayMode().getWidth());
+        mouseLogger.setMonitorHeight(currentFrame.getGraphicsConfiguration().getDevice().getDisplayMode().getHeight());
+        mouseLogger.setMouseX(e.getX());
+        mouseLogger.setMouseY(e.getY());
+        mouseLogger.setMouseExited(1);
 
-    @Override
-    public void mouseDragged(MouseEvent e) {
-
+        mouseLogger.generateLogString();
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        logger.writeToLog(e.paramString(), Config.MOUSE_LOG);
+        if(testStart) {
+            JFrame currentFrame = (JFrame) SwingUtilities.getRoot(this);
+
+            mouseLogger.setMonitorNr(Integer.parseInt(currentFrame.getTitle().replaceAll("[^0-9]", "")));
+            mouseLogger.setWindowWidth(currentFrame.getWidth());
+            mouseLogger.setWindowHeight(currentFrame.getHeight());
+            mouseLogger.setMonitorWidth(currentFrame.getGraphicsConfiguration().getDevice().getDisplayMode().getWidth());
+            mouseLogger.setMonitorHeight(currentFrame.getGraphicsConfiguration().getDevice().getDisplayMode().getHeight());
+            mouseLogger.setMouseX(e.getX());
+            mouseLogger.setMouseY(e.getY());
+            mouseLogger.setMouseMoved(1);
+
+            mouseLogger.generateLogString();
+        }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
     }
 }

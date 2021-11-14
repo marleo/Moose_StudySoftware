@@ -10,8 +10,7 @@ public class Config {
     public static int USER_ID = 1;
     public static String LOG_PATH = "logs/";
     public static String MOUSE_LOG = "mouselog_";
-    public static String TIMING_LOG = "timinglog_";
-    public static String LOG_NAME = "moose_log_";
+    public static String MOOSE_LOG = "moose_log_";
     public static String TESTTYPE = "NO_MOOSE";
     /**
      * Test
@@ -49,7 +48,7 @@ public class Config {
     /**
      *  Goal-Circle
      */
-    public static Color GOALCIRCLE_COLOR = new Color(208, 33, 33);;
+    public static Color GOALCIRCLE_COLOR = new Color(208, 33, 33);
     public static Color GOALCIRCLE_PRESSED_COLOR = new Color(118, 18, 18);
     public static int GOALCIRCLE_RAD = 15;
 }
