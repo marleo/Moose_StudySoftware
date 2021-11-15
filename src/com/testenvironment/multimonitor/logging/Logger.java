@@ -1,4 +1,4 @@
-package com.testenvironment.multimonitor.experiment;
+package com.testenvironment.multimonitor.logging;
 
 import com.testenvironment.multimonitor.Config;
 
@@ -18,8 +18,9 @@ public class Logger {
     private boolean headerWritten;
 
     private int participant;
-    private int trialNumber;
     private int blockNumber;
+    private int trialNumberShown;
+    private int trialNumberInSet;
     private int distancePx;
     private String movementDirection;
     private int startMonitor;
@@ -54,7 +55,8 @@ public class Logger {
         createLogFile();
         writeToLog(createHeaderString());
         this.participant = Config.USER_ID;
-        this.trialNumber = 0;
+        this.trialNumberShown = 0;
+        this.trialNumberInSet = 0;
         this.blockNumber = 0;
         this.distancePx = 0;
         this.movementDirection = "";
@@ -109,6 +111,7 @@ public class Logger {
         return "participant" + ";" +
                 "trialNumber" + ";" +
                 "blockNumber" + ";" +
+                "trialNumberInSet" + ";" +
                 "distancePx" + ";" +
                 "movementDirection" + ";" +
                 "testType" + ";" +
@@ -141,9 +144,17 @@ public class Logger {
     }
 
     public void generateLogString(){
+
+        if(this.targetMonitor > this.startMonitor) {
+            this.movementDirection = "Right";
+        } else {
+            this.movementDirection = "Left";
+        }
+
         String logString = participant + ";" +
-                trialNumber + ";" +
+                trialNumberShown + ";" +
                 blockNumber + ";" +
+                trialNumberInSet + ";" +
                 distancePx + ";" +
                 movementDirection + ";" +
                 testtype + ";" +
@@ -193,6 +204,10 @@ public class Logger {
         logFile.close();
     }
 
+    public void setTrialNumberInSet(int trialNumberInSet) {
+        this.trialNumberInSet = trialNumberInSet;
+    }
+
     public String getTesttype() {
         return testtype;
     }
@@ -209,12 +224,12 @@ public class Logger {
         this.participant = participant;
     }
 
-    public int getTrialNumber() {
-        return trialNumber;
+    public int getTrialNumberShown() {
+        return trialNumberShown;
     }
 
-    public void setTrialNumber(int trialNumber) {
-        this.trialNumber = trialNumber;
+    public void setTrialNumberShown(int trialNumberShown) {
+        this.trialNumberShown = trialNumberShown;
     }
 
     public int getBlockNumber() {

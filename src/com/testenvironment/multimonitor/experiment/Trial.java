@@ -8,12 +8,18 @@ public class Trial {
     private int monitorEnd;
     private Point start;
     private Point end;
+    private int trialNum;
 
-    public Trial(int monitorStart, int monitorEnd, Point start, Point end) {
+    public Trial(int monitorStart, int monitorEnd, Point start, Point end, int trialNum) {
         this.monitorStart = monitorStart;
         this.monitorEnd = monitorEnd;
         this.start = start;
         this.end = end;
+        this.trialNum = trialNum;
+    }
+
+    public int getTrialNum() {
+        return this.trialNum;
     }
 
     public int getMonitorStart() {

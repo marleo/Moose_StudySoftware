@@ -25,8 +25,11 @@ public class GoalCircle extends JComponent {
     }
 
     public boolean isInside(int x, int y) {
-        double distanceToCenter = Math.sqrt(Math.pow(x - this.centerX, 2) + Math.pow(y - this.centerY, 2));
-        return distanceToCenter <= this.radius;
+        return distanceToMid(x, y) <= this.radius;
+    }
+
+    public int distanceToMid(int x, int y) {
+        return (int) Math.sqrt(Math.pow(x - this.centerX, 2) + Math.pow(y - this.centerY, 2));
     }
 
     @Override

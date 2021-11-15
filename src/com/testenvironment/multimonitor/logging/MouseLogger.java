@@ -1,4 +1,4 @@
-package com.testenvironment.multimonitor.experiment;
+package com.testenvironment.multimonitor.logging;
 
 import com.testenvironment.multimonitor.Config;
 
@@ -30,6 +30,7 @@ public class MouseLogger {
     private int mouseEntered;
     private int mouseExited;
     private int mouseMoved;
+    private int trialNumberInSet;
 
     private MouseLogger() {
         createLogFile();
@@ -49,6 +50,7 @@ public class MouseLogger {
         this.mouseEntered = 0;
         this.mouseExited = 0;
         this.mouseMoved = 0;
+        this.trialNumberInSet = 0;
     }
 
     public static MouseLogger getMouseLogger() {
@@ -73,6 +75,7 @@ public class MouseLogger {
         return "participant" + ";" +
                 "trialNumber" + ";" +
                 "blockNumber" + ";" +
+                "trialNumberInSet" + ";" +
                 "MonitorNr" + ";" +
                 "MonitorWidth" + ";" +
                 "MonitorHeight" + ";" +
@@ -93,6 +96,7 @@ public class MouseLogger {
         String logString = participant + ";" +
                 trialNumber + ";" +
                 blockNumber + ";" +
+                trialNumberInSet + ";" +
                 monitorNr + ";" +
                 monitorWidth + ";" +
                 monitorHeight + ";" +
@@ -132,6 +136,10 @@ public class MouseLogger {
     public void endLog() {
         System.out.println("Logging ended");
         logFile.close();
+    }
+
+    public void setTrialNumberInSet(int trialNumberInSet) {
+        this.trialNumberInSet = trialNumberInSet;
     }
 
     public int getTrialNumber() {

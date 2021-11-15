@@ -5,6 +5,8 @@ import com.testenvironment.multimonitor.gui.DrawingPanel;
 import com.testenvironment.multimonitor.gui.ExperimentFrame;
 import com.testenvironment.multimonitor.gui.GoalCircle;
 import com.testenvironment.multimonitor.gui.StartField;
+import com.testenvironment.multimonitor.logging.Logger;
+import com.testenvironment.multimonitor.logging.MouseLogger;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -22,6 +24,7 @@ public class Experiment extends JPanel {
     private final Trialblocks trialblocks;
     private ArrayList<ArrayList<Trial>> blocks;
     private int currentTrial;
+    private int currentTrialInSet;
     private int currentBlock;
 
 
@@ -72,6 +75,8 @@ public class Experiment extends JPanel {
 
         ArrayList<JComponent> drawables = new ArrayList<>();
 
+        this.currentTrialInSet = this.blocks.get(currentBlock).get(currentTrial).getTrialNum();
+
         int xRect = (int) this.blocks.get(currentBlock).get(currentTrial).getStart().getX();  //generator.nextInt(endFrame.getWidth() - 100) + 50;
         int yRect = (int) this.blocks.get(currentBlock).get(currentTrial).getStart().getY();  //generator.nextInt(endFrame.getHeight() - 100) + 50;
 
@@ -108,6 +113,10 @@ public class Experiment extends JPanel {
 
     public int getTrial() {
         return this.currentTrial;
+    }
+
+    public int getTrialNumberInSet() { //Real trialnumber for logging
+        return this.currentTrialInSet;
     }
 
     private void playFinished() {

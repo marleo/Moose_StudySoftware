@@ -28,6 +28,10 @@ public class StartField extends JComponent {
                 y >= this.getTlY() && y <= this.getTlY() + this.getHeight();
     }
 
+    public int distanceToMid(int x, int y) {
+        return (int) Math.sqrt(Math.pow(x - this.centerX, 2) + Math.pow(y - this.centerY, 2));
+    }
+
     @Override
     public Dimension getPreferredSize() {
         return new Dimension(this.width, this.height);
