@@ -85,7 +85,7 @@ public class MouseLogger {
                 "MouseEntered" + ";" +
                 "MouseExited" + ";" +
                 "MouseMoved" + ";" +
-                "Time" + ";"
+                "timeStamp" + ";"
                 ;
     }
 

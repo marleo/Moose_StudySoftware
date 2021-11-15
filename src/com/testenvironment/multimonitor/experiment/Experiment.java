@@ -6,31 +6,38 @@ import com.testenvironment.multimonitor.gui.ExperimentFrame;
 import com.testenvironment.multimonitor.gui.GoalCircle;
 import com.testenvironment.multimonitor.gui.StartField;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.util.ArrayList;
-import java.util.Random;
 
 public class Experiment extends JPanel {
 
     private static ArrayList<JFrame> frames;
-    private final Random generator;
-    private final int numTrials;
-    private int count;
     private final Logger logger;
     private final MouseLogger mouseLogger;
+    private final Trialblocks trialblocks;
+    private ArrayList<ArrayList<Trial>> blocks;
+    private int currentTrial;
+    private int currentBlock;
+
 
     public Experiment(ArrayList<JFrame> frames) {
-        this.generator = new Random(100);
-        this.numTrials = Config.NUM_TRIALS;
-        this.count = 0;
         this.logger = Logger.getLogger();
         this.mouseLogger = MouseLogger.getMouseLogger();
-        int startFrame = generator.nextInt(frames.size());
-        int endFrame = generator.nextInt(frames.size());
-        while (endFrame == startFrame) {
-            endFrame = generator.nextInt(frames.size());
-        }
+        this.trialblocks = Trialblocks.getTrialblocks();
+        this.blocks = trialblocks.getBlocks();
+        this.currentTrial = 0;
+        this.currentBlock = 0;
+
+        int startFrame = blocks.get(0).get(0).getMonitorStart() - 1;
+        int endFrame = blocks.get(0).get(0).getMonitorEnd() - 1;
+
+        System.out.println("StartFrame: " + startFrame);
+        System.out.println("EndFrame: " + endFrame);
         drawFrames(frames.get(startFrame), frames.get(endFrame));
     }
 
@@ -45,12 +52,19 @@ public class Experiment extends JPanel {
     }
 
     public void drawFrames(JFrame startFrame, JFrame endFrame) {
-        count++;
-        if (count >= numTrials) {
+
+        if(currentTrial >= blocks.get(currentBlock).size()) {
+            currentBlock++;
+            currentTrial = 0;
+            playFinished();
+        }
+
+        if(currentBlock >= blocks.size()) {
             logger.endLog();
             mouseLogger.endLog();
             System.exit(0);
         }
+
         startFrame.getContentPane().removeAll();
         startFrame.repaint();
         endFrame.getContentPane().removeAll();
@@ -58,11 +72,11 @@ public class Experiment extends JPanel {
 
         ArrayList<JComponent> drawables = new ArrayList<>();
 
-        int xRect = generator.nextInt(endFrame.getWidth() - 100) + 50;
-        int yRect = generator.nextInt(endFrame.getHeight() - 100) + 50;
+        int xRect = (int) this.blocks.get(currentBlock).get(currentTrial).getStart().getX();  //generator.nextInt(endFrame.getWidth() - 100) + 50;
+        int yRect = (int) this.blocks.get(currentBlock).get(currentTrial).getStart().getY();  //generator.nextInt(endFrame.getHeight() - 100) + 50;
 
-        int xCirc = generator.nextInt(endFrame.getWidth() - 100) + 10;
-        int yCirc = generator.nextInt(endFrame.getHeight() - 100) + 10;
+        int xCirc = (int) this.blocks.get(currentBlock).get(currentTrial).getEnd().getX();    //generator.nextInt(endFrame.getWidth() - 100) + 10;
+        int yCirc = (int) this.blocks.get(currentBlock).get(currentTrial).getEnd().getY();    //generator.nextInt(endFrame.getHeight() - 100) + 10;
 
         //Add Startfield
         StartField startField = new StartField(xRect, yRect, Config.STARTFIELD_WIDTH, Config.STARTFIELD_HEIGHT);
@@ -75,7 +89,7 @@ public class Experiment extends JPanel {
 
         drawables = new ArrayList<>();
 
-        //Add GoalCircle
+                //Add GoalCircle
         GoalCircle goalCircle = new GoalCircle(xCirc, yCirc, Config.GOALCIRCLE_RAD);
         goalCircle.setLocation(new Point(goalCircle.getCenterX(), goalCircle.getCenterY()));
         drawables.add(goalCircle);
@@ -83,9 +97,30 @@ public class Experiment extends JPanel {
         canvasSecond.setBounds(0, 0, endFrame.getWidth(), endFrame.getHeight());
 
         endFrame.getContentPane().add(canvasSecond);
+
+        currentTrial++;
     }
 
-    public int getRemainingTests() {
-        return count;
+
+    public int getBlock() {
+        return this.currentBlock;
+    }
+
+    public int getTrial() {
+        return this.currentTrial;
+    }
+
+    private void playFinished() {
+        AudioInputStream finishedIn;
+        Clip clip;
+
+        try {
+            finishedIn = AudioSystem.getAudioInputStream(new File(Config.SOUND_FINISHED_PATH));
+            clip = AudioSystem.getClip();
+            clip.open(finishedIn);
+            clip.start();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 }

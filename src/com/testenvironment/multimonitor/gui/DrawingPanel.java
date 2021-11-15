@@ -26,6 +26,8 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
     private final Logger logger;
     private final MouseLogger mouseLogger;
     private Color startColor;
+    private int blockNumber;
+    private int trialNumber;
 
     public DrawingPanel(Experiment experiment, ArrayList<JComponent> drawables) {
         JFrame endFrame1;
@@ -44,6 +46,8 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
         this.logger = Logger.getLogger();
         this.mouseLogger = MouseLogger.getMouseLogger();
         this.startColor = Config.STARTFIELD_COLOR;
+        this.blockNumber = experiment.getBlock() + 1;
+        this.trialNumber = experiment.getTrial() + 1;
     }
 
     @Override
@@ -65,7 +69,7 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
 
         g2d.setColor(Config.INFOTEXT_COLOR);
         g2d.setFont(new Font(Config.FONT_STYLE, Font.PLAIN, Config.INFOTEXT_FONT_SIZE));
-        g2d.drawString("Trial: " + experiment.getRemainingTests() + " of " + Config.NUM_TRIALS, Config.INFOTEXT_X, Config.INFOTEXT_Y);
+        g2d.drawString("Block: " + blockNumber + " | Trial: " + trialNumber, Config.INFOTEXT_X, Config.INFOTEXT_Y);
 
         for (JComponent draw : drawables) {
             if (draw instanceof StartField) {
@@ -101,6 +105,8 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
         mouseLogger.setMouseX(e.getX());
         mouseLogger.setMouseY(e.getY());
         mouseLogger.setMousePressed(1);
+        mouseLogger.setBlockNumber(blockNumber);
+        mouseLogger.setTrialNumber(trialNumber);
 
         mouseLogger.generateLogString();
     }
@@ -141,6 +147,8 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
                         logger.setStartWindowHeight(windowHeight);
                         logger.setStartMonitorHeight(monitorHeight);
                         logger.setStartMonitorWidth(monitorWidth);
+                        logger.setBlockNumber(blockNumber);
+                        logger.setTrialNumber(trialNumber);
                     }
                 }
             } else if (dr instanceof GoalCircle) {
@@ -165,6 +173,8 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
                         logger.setTargetWindowHeight(windowHeight);
                         logger.setTargetMonitorWidth(monitorWidth);
                         logger.setTargetMonitorHeight(monitorHeight);
+                        logger.setBlockNumber(blockNumber);
+                        logger.setTrialNumber(trialNumber);
                         logger.setHit(1);
 
                         System.out.println("Test finished in: "
@@ -189,6 +199,8 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
                         logger.setTargetPointPressedX(e.getX());
                         logger.setTargetPointPressedY(e.getY());
                         logger.setTargetMonitor(Integer.parseInt(monitorName.replaceAll("[^0-9]", "")));
+                        logger.setBlockNumber(blockNumber);
+                        logger.setTrialNumber(trialNumber);
                         logger.setHit(0);
 
                         System.out.println("Test finished in: "
@@ -204,6 +216,8 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
             mouseLogger.setMouseX(e.getX());
             mouseLogger.setMouseY(e.getY());
             mouseLogger.setMouseReleased(1);
+            mouseLogger.setBlockNumber(blockNumber);
+            mouseLogger.setTrialNumber(trialNumber);
 
             mouseLogger.generateLogString();
         }
@@ -222,6 +236,8 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
         mouseLogger.setMouseX(e.getX());
         mouseLogger.setMouseY(e.getY());
         mouseLogger.setMouseEntered(1);
+        mouseLogger.setBlockNumber(blockNumber);
+        mouseLogger.setTrialNumber(trialNumber);
 
         mouseLogger.generateLogString();
     }
@@ -238,6 +254,8 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
         mouseLogger.setMouseX(e.getX());
         mouseLogger.setMouseY(e.getY());
         mouseLogger.setMouseExited(1);
+        mouseLogger.setBlockNumber(blockNumber);
+        mouseLogger.setTrialNumber(trialNumber);
 
         mouseLogger.generateLogString();
     }
@@ -255,6 +273,8 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
             mouseLogger.setMouseX(e.getX());
             mouseLogger.setMouseY(e.getY());
             mouseLogger.setMouseMoved(1);
+            mouseLogger.setBlockNumber(blockNumber);
+            mouseLogger.setTrialNumber(trialNumber);
 
             mouseLogger.generateLogString();
         }

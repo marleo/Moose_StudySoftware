@@ -3,20 +3,21 @@ package com.testenvironment.multimonitor.experiment;
 import com.testenvironment.multimonitor.Config;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Trialblocks {
     private static Trialblocks instance = null;
 
     private int numMonitors;
     private Map<Integer, ArrayList<Point>> position;
+    private ArrayList<Trial> trials;
+    private ArrayList<ArrayList<Trial>> blocks;
 
     private Trialblocks() {
         this.numMonitors = 0;
         this.position = new HashMap<>();
+        this.trials = new ArrayList<>();
+        this.blocks = new ArrayList<>();
     }
 
     public static Trialblocks getTrialblocks() {
@@ -26,23 +27,25 @@ public class Trialblocks {
         return instance;
     }
 
-    public void addMonitor(int windowWidth, int windowHeight) {
+    /**
+     * Add Monitor to Hashmap positions with all 9 possible fieldpositions
+     *
+     * @param monitorWidth MonitorWidth
+     * @param monitorHeight MonitorHeight
+     */
+    public void addMonitor(int monitorWidth, int monitorHeight) {
         this.numMonitors++; //start with monitor 1
 
         int startFieldWidth = Config.STARTFIELD_WIDTH;
         int startFieldHeight = Config.STARTFIELD_HEIGHT;
         ArrayList<Point> xyCoords = new ArrayList<>();
 
-        /**
-         *  Calculate different positions on that monitor
-         */
-
         int xLeft = startFieldWidth;
-        int xMid = windowWidth / 2;
-        int xRight = windowWidth - startFieldWidth;
+        int xMid = monitorWidth / 2;
+        int xRight = monitorWidth - startFieldWidth;
         int yTop = startFieldHeight;
-        int yMid = windowHeight / 2;
-        int yBottom = windowHeight - startFieldHeight;
+        int yMid = monitorHeight / 2;
+        int yBottom = monitorHeight - startFieldHeight;
 
         xyCoords.add(new Point(xLeft, yTop));       //Top Left
         xyCoords.add(new Point(xMid, yTop));        //Top Mid
@@ -57,6 +60,55 @@ public class Trialblocks {
         position.put(numMonitors, xyCoords);
     }
 
+    public void generateTrials() {
+        int points = 0; //Number of positions on all screens combined
+
+        for(int i = 1; i <= numMonitors; i++) {
+            points += position.get(i).size();
+        }
+
+        for(int i = 1; i <= Config.MAX_MONITOR; i++) {
+            for(int j = Config.MAX_MONITOR; j > 1; j--) {
+                if(i != j) {
+                    //Same Positions
+                    trials.add(new Trial(i, j, position.get(i).get(5), position.get(j).get(3)));
+                    trials.add(new Trial(i, j, position.get(i).get(2), position.get(i).get(0)));
+                    trials.add(new Trial(i, j, position.get(i).get(8), position.get(i).get(6)));
+                    trials.add(new Trial(i, j, position.get(i).get(1), position.get(i).get(1)));
+                    trials.add(new Trial(i, j, position.get(i).get(4), position.get(i).get(4)));
+                    trials.add(new Trial(i, j, position.get(i).get(7), position.get(i).get(7)));
+                    trials.add(new Trial(i, j, position.get(i).get(6), position.get(i).get(8)));
+                    trials.add(new Trial(i, j, position.get(i).get(0), position.get(i).get(2)));
+                    trials.add(new Trial(i, j, position.get(i).get(3), position.get(i).get(5)));
+                    //Diagonal
+//                    trials.add(new Trial(i, j, position.get(i).get(5), position.get(j).get(3)));
+//                    trials.add(new Trial(i, j, position.get(i).get(2), position.get(i).get(0)));
+//                    trials.add(new Trial(i, j, position.get(i).get(8), position.get(i).get(6)));
+//                    trials.add(new Trial(i, j, position.get(i).get(1), position.get(i).get(1)));
+//                    trials.add(new Trial(i, j, position.get(i).get(4), position.get(i).get(4)));
+//                    trials.add(new Trial(i, j, position.get(i).get(7), position.get(i).get(7)));
+//                    trials.add(new Trial(i, j, position.get(i).get(6), position.get(i).get(8)));
+//                    trials.add(new Trial(i, j, position.get(i).get(0), position.get(i).get(2)));
+//                    trials.add(new Trial(i, j, position.get(i).get(3), position.get(i).get(5)));
+                }
+            }
+        }
+
+        for(int i = 0; i < Config.BLOCKS; i++) {
+            Collections.shuffle(trials);
+            blocks.add(trials);
+        }
+
+        System.out.println("Trials: " + trials.size());
+    }
+
+    public ArrayList<ArrayList<Trial>> getBlocks() {
+        return blocks;
+    }
+
+    /**
+     *  For Debugging -> Prints map to console
+     */
     public void printMonitorPositions() {
         System.out.println("---------------------------");
         position.forEach((key, value) -> System.out.println("Monitor " + key + ": " + Arrays.toString(value.toArray())));

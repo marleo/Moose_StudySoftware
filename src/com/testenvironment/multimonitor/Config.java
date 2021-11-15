@@ -13,12 +13,15 @@ public class Config {
                                     {0, 0, 0, 0, 0},
                                     {0, 0, 0, 0, 0},
                                     {0, 0, 0, 0, 0}};
+    public static int MAX_MONITOR = 2;
+    public static int BLOCKS = 4; //Currently, one block consists of 10 Trials
     public static String LOG_PATH = "logs/";
     public static String MOUSE_LOG = "mouselog_";
     public static String MOOSE_LOG = "moose_log_";
     public static String TESTTYPE = "NO_MOOSE";
     public static String SOUND_ERROR_PATH = "sounds/error.wav";
     public static String SOUND_SUCCESS_PATH = "sounds/success.wav";
+    public static String SOUND_FINISHED_PATH = "sounds/finished.wav";
     /**
      * Test
      */
