@@ -1,5 +1,7 @@
 package com.testenvironment.multimonitor.gui;
 
+import com.testenvironment.multimonitor.experiment.Trialblocks;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -12,6 +14,8 @@ public class ExperimentFrame extends JFrame {
 
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice[] gs = ge.getScreenDevices();
+        Trialblocks trialblocks = Trialblocks.getTrialblocks();
+
 
         /*
             Generate Frames
@@ -38,8 +42,11 @@ public class ExperimentFrame extends JFrame {
                 frames.add(f);
 
             }
+            trialblocks.addMonitor(gd.getDefaultConfiguration().getDevice().getDisplayMode().getWidth(),
+                    gd.getDefaultConfiguration().getDevice().getDisplayMode().getHeight());
             seq++;
         }
+        trialblocks.printMonitorPositions();
     }
 
 
