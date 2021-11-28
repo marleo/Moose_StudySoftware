@@ -55,10 +55,10 @@ public class Experiment extends JPanel {
     }
 
     public void drawFrames(JFrame startFrame, JFrame endFrame) {
-
         if(currentTrial >= blocks.get(currentBlock).size()) {
             currentBlock++;
             currentTrial = 0;
+            trialblocks.resetTrialblock();
             playFinished();
         }
 
@@ -68,6 +68,8 @@ public class Experiment extends JPanel {
             System.exit(0);
         }
 
+        Config.GOALCIRCLE_RAD = Config.GOALCIRCLE_RADS[currentBlock];
+
         startFrame.getContentPane().removeAll();
         startFrame.repaint();
         endFrame.getContentPane().removeAll();
@@ -75,13 +77,19 @@ public class Experiment extends JPanel {
 
         ArrayList<JComponent> drawables = new ArrayList<>();
 
+        /**
+         *  Debugging here
+         */
         this.currentTrialInSet = this.blocks.get(currentBlock).get(currentTrial).getTrialNum();
+        System.out.println("Current Trial: " + this.currentTrialInSet);
 
-        int xRect = (int) this.blocks.get(currentBlock).get(currentTrial).getStart().getX();  //generator.nextInt(endFrame.getWidth() - 100) + 50;
-        int yRect = (int) this.blocks.get(currentBlock).get(currentTrial).getStart().getY();  //generator.nextInt(endFrame.getHeight() - 100) + 50;
+        int xRect = (int) this.blocks.get(currentBlock).get(currentTrial).getStart().getX();
+        int yRect = (int) this.blocks.get(currentBlock).get(currentTrial).getStart().getY();
+        System.out.println("xRect, yRect: " + xRect + " , " + yRect + " Insets: ");
 
-        int xCirc = (int) this.blocks.get(currentBlock).get(currentTrial).getEnd().getX();    //generator.nextInt(endFrame.getWidth() - 100) + 10;
-        int yCirc = (int) this.blocks.get(currentBlock).get(currentTrial).getEnd().getY();    //generator.nextInt(endFrame.getHeight() - 100) + 10;
+        int xCirc = (int) this.blocks.get(currentBlock).get(currentTrial).getEnd().getX();
+        int yCirc = (int) this.blocks.get(currentBlock).get(currentTrial).getEnd().getY();
+        System.out.println("xCirc, yCirc: " + xCirc + " , " + yCirc);
 
         //Add Startfield
         StartField startField = new StartField(xRect, yRect, Config.STARTFIELD_WIDTH, Config.STARTFIELD_HEIGHT);
@@ -91,17 +99,19 @@ public class Experiment extends JPanel {
         canvas.setBounds(0, 0, startFrame.getWidth(), startFrame.getHeight());
 
         startFrame.getContentPane().add(canvas);
+        startFrame.setVisible(true);
 
         drawables = new ArrayList<>();
 
-                //Add GoalCircle
+        //Add GoalCircle
         GoalCircle goalCircle = new GoalCircle(xCirc, yCirc, Config.GOALCIRCLE_RAD);
-        goalCircle.setLocation(new Point(goalCircle.getCenterX(), goalCircle.getCenterY()));
+        goalCircle.setLocation(new Point(goalCircle.getTlX(), goalCircle.getTlY()));
         drawables.add(goalCircle);
         DrawingPanel canvasSecond = new DrawingPanel(this, drawables);
         canvasSecond.setBounds(0, 0, endFrame.getWidth(), endFrame.getHeight());
 
         endFrame.getContentPane().add(canvasSecond);
+        endFrame.setVisible(true);
 
         currentTrial++;
     }

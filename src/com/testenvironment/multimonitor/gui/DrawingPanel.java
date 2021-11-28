@@ -2,6 +2,7 @@ package com.testenvironment.multimonitor.gui;
 
 import com.testenvironment.multimonitor.Config;
 import com.testenvironment.multimonitor.experiment.Experiment;
+import com.testenvironment.multimonitor.experiment.Trial;
 import com.testenvironment.multimonitor.experiment.Trialblocks;
 import com.testenvironment.multimonitor.logging.Logger;
 import com.testenvironment.multimonitor.logging.MouseLogger;
@@ -13,7 +14,6 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Random;
 
 public class DrawingPanel extends JPanel implements MouseInputListener {
 
@@ -29,6 +29,8 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
     private int blockNumber;
     private int trialNumber;
     private Trialblocks trialblock;
+    private int errors;
+    private Trial currentTrial;
 
     public DrawingPanel(Experiment experiment, ArrayList<JComponent> drawables) {
         this.drawables = drawables;
@@ -43,6 +45,8 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
         this.startColor = Config.STARTFIELD_COLOR;
         this.blockNumber = experiment.getBlock() + 1;
         this.trialNumber = experiment.getTrial() + 1;
+        this.errors = 0;
+        this.currentTrial = trialblock.getBlocks().get(blockNumber - 1).get(trialNumber - 1);
 
         if(trialNumber % 2 != 0) {
             this.startFrame = Experiment.getFrames().get(trialblock.getBlocks().get(blockNumber - 1).get(trialNumber - 1).getMonitorEnd() - 1);
@@ -68,11 +72,11 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        this.setBackground(Config.TESTBACKGROUND_COLOR);
+//        this.setBackground(Config.TESTBACKGROUND_COLOR);
+        g2d.setColor(new Color(230, 255, 230)); //new
+        g2d.fillRect(0,0,this.getWidth(),this.getHeight()); //new
 
-        g2d.setColor(Config.INFOTEXT_COLOR);
-        g2d.setFont(new Font(Config.FONT_STYLE, Font.PLAIN, Config.INFOTEXT_FONT_SIZE));
-        g2d.drawString("Block: " + blockNumber + " | Trial: " + trialNumber, Config.INFOTEXT_X, Config.INFOTEXT_Y);
+        System.out.println("Drawing...");
 
         for (JComponent draw : drawables) {
             if (draw instanceof StartField) {
@@ -81,7 +85,9 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
                 int a = draw.getWidth();
                 int b = draw.getHeight();
 
-                this.setBackground(new Color(230, 255, 230));
+//                this.setBackground(new Color(230, 255, 230));
+                g2d.setColor(new Color(230, 255, 230)); //new
+                g2d.fillRect(0,0,this.getWidth(),this.getHeight());
 
                 g2d.setColor(startColor);
                 g2d.fillRect(c, d, a, b);
@@ -89,11 +95,18 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
                 g2d.setFont(new Font(Config.FONT_STYLE, Font.PLAIN, Config.STARTFIELD_FONT_SIZE));
                 g2d.drawString("Start", c + a / 4, d + (3 * b / 4));
             } else if (draw instanceof GoalCircle) {
-                this.setBackground(new Color(255, 230, 230));
+//                this.setBackground(new Color(255, 230, 230));
+                g2d.setColor(new Color(255, 230, 230)); //new
+                g2d.fillRect(0,0,this.getWidth(),this.getHeight());
+
                 g2d.setColor(Config.GOALCIRCLE_COLOR);
                 g2d.fillOval(((GoalCircle) draw).getTlX(), ((GoalCircle) draw).getTlY(), ((GoalCircle) draw).getDiam(), ((GoalCircle) draw).getDiam());
             }
         }
+
+        g2d.setColor(Config.INFOTEXT_COLOR);
+        g2d.setFont(new Font(Config.FONT_STYLE, Font.PLAIN, Config.INFOTEXT_FONT_SIZE));
+        g2d.drawString("Block: " + blockNumber + " | Trial: " + trialNumber, Config.INFOTEXT_X, Config.INFOTEXT_Y);
     }
 
     /*
@@ -115,27 +128,16 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
                 if (isInStart) {
                     System.out.println("Test started..."); //TODO: REMOVE
                     if (!testStart) {
-                        testTime = System.currentTimeMillis();
                         testStart = true;
 
                         startColor = Config.STARTFIELD_PRESSED_COLOR;
+                        repaint();
 
-                        logger.setTrialStartTime(testTime);
-                        logger.setStartPosX(dr.getX());
-                        logger.setStartPosY(dr.getY());
-                        logger.setStartCenterX(((StartField) dr).getCenterX());
-                        logger.setStartCenterY(((StartField) dr).getCenterY());
-                        logger.setDistancePx(((StartField) dr).distanceToMid(e.getX(), e.getY()));
-                        logger.setStartPointPressedX(e.getX());
-                        logger.setStartPointPressedY(e.getY());
-                        logger.setStartMonitor(Integer.parseInt(monitorName.replaceAll("[^0-9]", "")));
+                        setStartLogger(e, monitorName, dr);
                         logger.setStartWindowWidth(windowWidth);
                         logger.setStartWindowHeight(windowHeight);
                         logger.setStartMonitorHeight(monitorHeight);
                         logger.setStartMonitorWidth(monitorWidth);
-                        logger.setBlockNumber(blockNumber);
-                        logger.setTrialNumberShown(trialNumber);
-                        logger.setTrialNumberInSet(experiment.getTrialNumberInSet());
                     }
                 }
             } else if (dr instanceof GoalCircle) {
@@ -144,73 +146,29 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
                     if (testStart) {
                         playSuccess();
 
-                        long testFin = System.currentTimeMillis();
-                        long testFinishedTime = System.currentTimeMillis() - testTime;
-
-                        logger.setTrialEndTime(testFin);
-                        logger.setTrialTime(testFinishedTime);
-                        logger.setTargetPosX(dr.getX());
-                        logger.setTargetPosY(dr.getY());
-                        logger.setTargetCenterX(((GoalCircle) dr).getCenterX());
-                        logger.setTargetCenterY(((GoalCircle) dr).getCenterX());
-                        logger.setDistancePx(((GoalCircle) dr).distanceToMid(e.getX(), e.getY()));
-                        logger.setTargetPointPressedX(e.getX());
-                        logger.setTargetPointPressedY(e.getY());
-                        logger.setTargetMonitor(Integer.parseInt(monitorName.replaceAll("[^0-9]", "")));
+                        setTargetLogger(e, monitorName, dr);
                         logger.setTargetWindowWidth(windowWidth);
                         logger.setTargetWindowHeight(windowHeight);
                         logger.setTargetMonitorWidth(monitorWidth);
                         logger.setTargetMonitorHeight(monitorHeight);
-                        logger.setBlockNumber(blockNumber);
-                        logger.setTrialNumberShown(trialNumber);
-                        logger.setTrialNumberInSet(experiment.getTrialNumberInSet());
-                        logger.setHit(1);
-
-                        System.out.println("Test finished in: "
-                                + testFinishedTime
-                                + "ms");
-                        experiment.drawFrames(startFrame, endFrame);
+                        logger.setErrors(this.currentTrial.getAndResetErrors());
                         logger.generateLogString();
+
+                        experiment.drawFrames(startFrame, endFrame);
                     }
                 } else {
                     if(testStart) {
                         playError();
 
-                        long testFin = System.currentTimeMillis();
-                        long testFinishedTime = System.currentTimeMillis() - testTime;
-
-                        logger.setTrialEndTime(testFin);
-                        logger.setTrialTime(testFinishedTime);
-                        logger.setTargetPosX(dr.getX());
-                        logger.setTargetPosY(dr.getY());
-                        logger.setTargetCenterX(((GoalCircle) dr).getCenterX());
-                        logger.setTargetCenterY(((GoalCircle) dr).getCenterX());
-                        logger.setDistancePx(((GoalCircle) dr).distanceToMid(e.getX(), e.getY()));
-                        logger.setTargetPointPressedX(e.getX());
-                        logger.setTargetPointPressedY(e.getY());
-                        logger.setTargetMonitor(Integer.parseInt(monitorName.replaceAll("[^0-9]", "")));
-                        logger.setBlockNumber(blockNumber);
-                        logger.setTrialNumberShown(trialNumber);
-                        logger.setTrialNumberInSet(experiment.getTrialNumberInSet());
-                        logger.setHit(0);
-
-                        System.out.println("Test finished in: "
-                                + testFinishedTime
-                                + "ms");
-                        logger.generateLogString();
+                        setTargetLogger(e, monitorName, dr);
+                        this.currentTrial.setError();
+                        trialblock.pushBackTrial(this.currentTrial);
+                        experiment.drawFrames(startFrame, endFrame);
                     }
                 }
             }
-            mouseLogger.setMonitorNr(Integer.parseInt(monitorName.replaceAll("[^0-9]", "")));
-            mouseLogger.setMonitorWidth(monitorWidth);
-            mouseLogger.setMonitorHeight(monitorHeight);
-            mouseLogger.setMouseX(e.getX());
-            mouseLogger.setMouseY(e.getY());
+            setMouseLogger(e, currentFrame);
             mouseLogger.setMouseReleased(1);
-            mouseLogger.setBlockNumber(blockNumber);
-            mouseLogger.setTrialNumber(trialNumber);
-            mouseLogger.setTrialNumberInSet(experiment.getTrialNumberInSet());
-
             mouseLogger.generateLogString();
         }
 
@@ -220,18 +178,8 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
     public void mousePressed(MouseEvent e) {
         JFrame currentFrame = (JFrame) SwingUtilities.getRoot(this);
 
-        mouseLogger.setMonitorNr(Integer.parseInt(currentFrame.getTitle().replaceAll("[^0-9]", "")));
-        mouseLogger.setWindowWidth(currentFrame.getWidth());
-        mouseLogger.setWindowHeight(currentFrame.getHeight());
-        mouseLogger.setMonitorWidth(currentFrame.getGraphicsConfiguration().getDevice().getDisplayMode().getWidth());
-        mouseLogger.setMonitorHeight(currentFrame.getGraphicsConfiguration().getDevice().getDisplayMode().getHeight());
-        mouseLogger.setMouseX(e.getX());
-        mouseLogger.setMouseY(e.getY());
+        setMouseLogger(e, currentFrame);
         mouseLogger.setMousePressed(1);
-        mouseLogger.setBlockNumber(blockNumber);
-        mouseLogger.setTrialNumber(trialNumber);
-        mouseLogger.setTrialNumberInSet(experiment.getTrialNumberInSet());
-
         mouseLogger.generateLogString();
     }
 
@@ -240,18 +188,8 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
     public void mouseEntered(MouseEvent e) {
         JFrame currentFrame = (JFrame) SwingUtilities.getRoot(this);
 
-        mouseLogger.setMonitorNr(Integer.parseInt(currentFrame.getTitle().replaceAll("[^0-9]", "")));
-        mouseLogger.setWindowWidth(currentFrame.getWidth());
-        mouseLogger.setWindowHeight(currentFrame.getHeight());
-        mouseLogger.setMonitorWidth(currentFrame.getGraphicsConfiguration().getDevice().getDisplayMode().getWidth());
-        mouseLogger.setMonitorHeight(currentFrame.getGraphicsConfiguration().getDevice().getDisplayMode().getHeight());
-        mouseLogger.setMouseX(e.getX());
-        mouseLogger.setMouseY(e.getY());
+        setMouseLogger(e, currentFrame);
         mouseLogger.setMouseEntered(1);
-        mouseLogger.setBlockNumber(blockNumber);
-        mouseLogger.setTrialNumber(trialNumber);
-        mouseLogger.setTrialNumberInSet(experiment.getTrialNumberInSet());
-
         mouseLogger.generateLogString();
     }
 
@@ -259,18 +197,8 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
     public void mouseExited(MouseEvent e) {
         JFrame currentFrame = (JFrame) SwingUtilities.getRoot(this);
 
-        mouseLogger.setMonitorNr(Integer.parseInt(currentFrame.getTitle().replaceAll("[^0-9]", "")));
-        mouseLogger.setWindowWidth(currentFrame.getWidth());
-        mouseLogger.setWindowHeight(currentFrame.getHeight());
-        mouseLogger.setMonitorWidth(currentFrame.getGraphicsConfiguration().getDevice().getDisplayMode().getWidth());
-        mouseLogger.setMonitorHeight(currentFrame.getGraphicsConfiguration().getDevice().getDisplayMode().getHeight());
-        mouseLogger.setMouseX(e.getX());
-        mouseLogger.setMouseY(e.getY());
+        setMouseLogger(e, currentFrame);
         mouseLogger.setMouseExited(1);
-        mouseLogger.setBlockNumber(blockNumber);
-        mouseLogger.setTrialNumber(trialNumber);
-        mouseLogger.setTrialNumberInSet(experiment.getTrialNumberInSet());
-
         mouseLogger.generateLogString();
     }
 
@@ -279,28 +207,20 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
         if(testStart) {
             JFrame currentFrame = (JFrame) SwingUtilities.getRoot(this);
 
-            mouseLogger.setMonitorNr(Integer.parseInt(currentFrame.getTitle().replaceAll("[^0-9]", "")));
-            mouseLogger.setWindowWidth(currentFrame.getWidth());
-            mouseLogger.setWindowHeight(currentFrame.getHeight());
-            mouseLogger.setMonitorWidth(currentFrame.getGraphicsConfiguration().getDevice().getDisplayMode().getWidth());
-            mouseLogger.setMonitorHeight(currentFrame.getGraphicsConfiguration().getDevice().getDisplayMode().getHeight());
-            mouseLogger.setMouseX(e.getX());
-            mouseLogger.setMouseY(e.getY());
+            setMouseLogger(e, currentFrame);
             mouseLogger.setMouseMoved(1);
-            mouseLogger.setBlockNumber(blockNumber);
-            mouseLogger.setTrialNumber(trialNumber);
-            mouseLogger.setTrialNumberInSet(experiment.getTrialNumberInSet());
-
             mouseLogger.generateLogString();
         }
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
+        // not needed
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
+        // not needed
     }
 
     private void playSuccess() {
@@ -329,5 +249,55 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
         } catch(Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void setStartLogger(MouseEvent e, String monitorName, JComponent dr) {
+        testTime = System.currentTimeMillis();
+
+        logger.setTrialStartTime(testTime);
+        logger.setStartPosX(dr.getX());
+        logger.setStartPosY(dr.getY());
+        logger.setStartCenterX(((StartField) dr).getCenterX());
+        logger.setStartCenterY(((StartField) dr).getCenterY());
+        logger.setDistancePx(((StartField) dr).distanceToMid(e.getX(), e.getY()));
+        logger.setStartPointPressedX(e.getX());
+        logger.setStartPointPressedY(e.getY());
+        logger.setStartMonitor(Integer.parseInt(monitorName.replaceAll("[^0-9]", "")));
+        logger.setBlockNumber(blockNumber);
+        logger.setTrialNumberShown(trialNumber);
+        logger.setTrialNumberInSet(experiment.getTrialNumberInSet());
+    }
+
+    private void setTargetLogger(MouseEvent e, String monitorName, JComponent dr) {
+        long testFin = System.currentTimeMillis();
+        long testFinishedTime = System.currentTimeMillis() - testTime;
+
+        logger.setTrialEndTime(testFin);
+        logger.setTrialTime(testFinishedTime);
+        logger.setTargetPosX(dr.getX());
+        logger.setTargetPosY(dr.getY());
+        logger.setTargetCenterX(((GoalCircle) dr).getCenterX());
+        logger.setTargetCenterY(((GoalCircle) dr).getCenterX());
+        logger.setDistancePx(((GoalCircle) dr).distanceToMid(e.getX(), e.getY()));
+        logger.setTargetPointPressedX(e.getX());
+        logger.setTargetPointPressedY(e.getY());
+        logger.setTargetMonitor(Integer.parseInt(monitorName.replaceAll("[^0-9]", "")));
+        logger.setBlockNumber(blockNumber);
+        logger.setTrialNumberShown(trialNumber);
+        logger.setTrialNumberInSet(experiment.getTrialNumberInSet());
+    }
+
+    private void setMouseLogger(MouseEvent e, JFrame currentFrame) {
+        mouseLogger.setMonitorNr(Integer.parseInt(currentFrame.getTitle().replaceAll("[^0-9]", "")));
+        mouseLogger.setWindowWidth(currentFrame.getWidth());
+        mouseLogger.setWindowHeight(currentFrame.getHeight());
+        mouseLogger.setMonitorWidth(currentFrame.getGraphicsConfiguration().getDevice().getDisplayMode().getWidth());
+        mouseLogger.setMonitorHeight(currentFrame.getGraphicsConfiguration().getDevice().getDisplayMode().getHeight());
+        mouseLogger.setMouseX(e.getX());
+        mouseLogger.setMouseY(e.getY());
+        mouseLogger.setBlockNumber(blockNumber);
+        mouseLogger.setTrialNumber(trialNumber);
+        mouseLogger.setTrialNumberInSet(experiment.getTrialNumberInSet());
+
     }
 }

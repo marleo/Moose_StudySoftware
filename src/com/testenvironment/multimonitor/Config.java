@@ -8,29 +8,21 @@ public class Config {
      * Logging
      */
     public static int USER_ID = 1;
-    public static int[][] SETUP =  {{0, 0, 0, 0, 0},
-                                    {0, 0, 0, 0, 0},
-                                    {0, 0, 0, 0, 0},
-                                    {0, 0, 0, 0, 0},
-                                    {0, 0, 0, 0, 0}};
     public static int MAX_MONITOR = 2;
-    public static int BLOCKS = 4; //Currently, one block consists of 10 Trials
+    public static int BLOCKS = 4;
     public static String LOG_PATH = "logs/";
-    public static String MOUSE_LOG = "mouselog_";
-    public static String MOOSE_LOG = "moose_log_";
+    public static String MOUSE_LOG = "events_";
+    public static String MOOSE_LOG = "moose_";
     public static String TESTTYPE = "NO_MOOSE";
     public static String SOUND_ERROR_PATH = "sounds/error.wav";
     public static String SOUND_SUCCESS_PATH = "sounds/success.wav";
     public static String SOUND_FINISHED_PATH = "sounds/finished.wav";
-    /**
-     * Test
-     */
-    public static int NUM_TRIALS = 20;
 
     /**
      *  Testpanel
      */
     public static Color TESTBACKGROUND_COLOR = Color.LIGHT_GRAY;
+    public static int PADDING = 15;
 
     /**
      *  Startbutton
@@ -60,5 +52,6 @@ public class Config {
      */
     public static Color GOALCIRCLE_COLOR = new Color(208, 33, 33);
     public static Color GOALCIRCLE_PRESSED_COLOR = new Color(118, 18, 18);
-    public static int GOALCIRCLE_RAD = 15;
+    public static int GOALCIRCLE_RAD = 15; //Default value
+    public static int[] GOALCIRCLE_RADS = {15, 20, 25, 10}; //value per block
 }

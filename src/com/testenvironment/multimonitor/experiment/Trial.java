@@ -9,6 +9,7 @@ public class Trial {
     private Point start;
     private Point end;
     private int trialNum;
+    private int errors;
 
     public Trial(int monitorStart, int monitorEnd, Point start, Point end, int trialNum) {
         this.monitorStart = monitorStart;
@@ -16,10 +17,21 @@ public class Trial {
         this.start = start;
         this.end = end;
         this.trialNum = trialNum;
+        this.errors = 0;
     }
 
     public int getTrialNum() {
         return this.trialNum;
+    }
+
+    public void setError() {
+        this.errors++;
+    }
+
+    public int getAndResetErrors() {
+        int returnVal = this.errors;
+        this.errors = 0;
+        return returnVal;
     }
 
     public int getMonitorStart() {

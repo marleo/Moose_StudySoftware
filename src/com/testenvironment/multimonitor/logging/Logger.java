@@ -45,7 +45,7 @@ public class Logger {
     private int startPointPressedY;
     private int targetPointPressedX;
     private int targetPointPressedY;
-    private int hit;
+    private int errors;
     private long trialStartTime;
     private long trialEndTime;
     private long trialTime;
@@ -83,7 +83,7 @@ public class Logger {
         this.startPointPressedY = 0;
         this.targetPointPressedX = 0;
         this.targetPointPressedY = 0;
-        this.hit = 0;
+        this.errors = 0;
         this.trialStartTime = 0;
         this.trialEndTime = 0;
         this.trialTime = 0;
@@ -137,7 +137,7 @@ public class Logger {
                 "startPointPressedY" + ";" +
                 "targetPointPressedX" + ";" +
                 "targetPointPressedY" + ";" +
-                "hit" + ";" +
+                "errors" + ";" +
                 "trialStartTime" + ";" +
                 "trialEndTime" + ";" +
                 "trialTime";
@@ -180,7 +180,7 @@ public class Logger {
                 startPointPressedY + ";" +
                 targetPointPressedX + ";" +
                 targetPointPressedY + ";" +
-                hit + ";" +
+                errors + ";" +
                 trialStartTime + ";" +
                 trialEndTime + ";" +
                 trialTime;
@@ -369,11 +369,11 @@ public class Logger {
     }
 
     public int isHit() {
-        return hit;
+        return errors;
     }
 
-    public void setHit(int hit) {
-        this.hit = hit;
+    public void setErrors(int errors) {
+        this.errors = errors;
     }
 
     public long getTrialStartTime() {

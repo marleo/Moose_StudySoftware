@@ -9,9 +9,9 @@ public class Trialblocks {
     private static Trialblocks instance = null;
 
     private int numMonitors;
-    private Map<Integer, ArrayList<Point>> position;
-    private ArrayList<Trial> trials;
-    private ArrayList<ArrayList<Trial>> blocks;
+    private final Map<Integer, ArrayList<Point>> position;
+    private final ArrayList<Trial> trials;
+    private final ArrayList<ArrayList<Trial>> blocks;
 
     private Trialblocks() {
         this.numMonitors = 0;
@@ -33,19 +33,20 @@ public class Trialblocks {
      * @param monitorWidth MonitorWidth
      * @param monitorHeight MonitorHeight
      */
-    public void addMonitor(int monitorWidth, int monitorHeight) {
+    public void addMonitor(int monitorWidth, int monitorHeight, int insetSize) {
         this.numMonitors++; //start with monitor 1
 
-        int startFieldWidth = Config.STARTFIELD_WIDTH;
-        int startFieldHeight = Config.STARTFIELD_HEIGHT;
+        int rectWidth = Config.STARTFIELD_WIDTH;
+        int rectHeight = Config.STARTFIELD_HEIGHT;
+        int padding = Config.PADDING;
         ArrayList<Point> xyCoords = new ArrayList<>();
 
-        int xLeft = startFieldWidth;
+        int xLeft = padding + rectWidth / 2;
         int xMid = monitorWidth / 2;
-        int xRight = monitorWidth - startFieldWidth;
-        int yTop = startFieldHeight;
-        int yMid = monitorHeight / 2;
-        int yBottom = monitorHeight - startFieldHeight;
+        int xRight = monitorWidth - rectWidth / 2 - padding;
+        int yTop = rectHeight + insetSize + padding;
+        int yMid = monitorHeight / 2 - insetSize;
+        int yBottom = monitorHeight - rectHeight / 2 - insetSize - padding;
 
         xyCoords.add(new Point(xLeft, yTop));       //Top Left
         xyCoords.add(new Point(xMid, yTop));        //Top Mid
@@ -66,29 +67,29 @@ public class Trialblocks {
             for(int j = Config.MAX_MONITOR; j > 1; j--) {
                 if(i != j) {
                     //Same Positions
-                    trials.add(new Trial(i, j, position.get(i).get(5), position.get(j).get(3), trialNum++));
-                    trials.add(new Trial(i, j, position.get(i).get(2), position.get(i).get(0), trialNum++));
-                    trials.add(new Trial(i, j, position.get(i).get(8), position.get(i).get(6), trialNum++));
-                    trials.add(new Trial(i, j, position.get(i).get(1), position.get(i).get(1), trialNum++));
-                    trials.add(new Trial(i, j, position.get(i).get(4), position.get(i).get(4), trialNum++));
+//                    trials.add(new Trial(i, j, position.get(i).get(5), position.get(j).get(3), trialNum++));
+//                    trials.add(new Trial(i, j, position.get(i).get(2), position.get(i).get(0), trialNum++));
+//                    trials.add(new Trial(i, j, position.get(i).get(8), position.get(i).get(6), trialNum++));
+//                    trials.add(new Trial(i, j, position.get(i).get(1), position.get(i).get(1), trialNum++));
+//                    trials.add(new Trial(i, j, position.get(i).get(4), position.get(i).get(4), trialNum++));
                     trials.add(new Trial(i, j, position.get(i).get(7), position.get(i).get(7), trialNum++));
                     trials.add(new Trial(i, j, position.get(i).get(6), position.get(i).get(8), trialNum++));
                     trials.add(new Trial(i, j, position.get(i).get(0), position.get(i).get(2), trialNum++));
                     trials.add(new Trial(i, j, position.get(i).get(3), position.get(i).get(5), trialNum++));
 
                     //Diagonal
-                    trials.add(new Trial(i, j, position.get(i).get(0), position.get(j).get(8), trialNum++));
-                    trials.add(new Trial(i, j, position.get(i).get(6), position.get(i).get(2), trialNum++));
-                    trials.add(new Trial(i, j, position.get(i).get(2), position.get(i).get(6), trialNum++));
-                    trials.add(new Trial(i, j, position.get(i).get(8), position.get(i).get(0), trialNum++));
-                    trials.add(new Trial(i, j, position.get(i).get(4), position.get(i).get(8), trialNum++));
-                    trials.add(new Trial(i, j, position.get(i).get(4), position.get(i).get(2), trialNum++));
-                    trials.add(new Trial(i, j, position.get(i).get(4), position.get(i).get(0), trialNum++));
-                    trials.add(new Trial(i, j, position.get(i).get(4), position.get(i).get(6), trialNum++));
-                    trials.add(new Trial(i, j, position.get(i).get(6), position.get(i).get(4), trialNum++));
-                    trials.add(new Trial(i, j, position.get(i).get(0), position.get(i).get(4), trialNum++));
-                    trials.add(new Trial(i, j, position.get(i).get(2), position.get(i).get(4), trialNum++));
-                    trials.add(new Trial(i, j, position.get(i).get(8), position.get(i).get(4), trialNum++));
+//                    trials.add(new Trial(i, j, position.get(i).get(0), position.get(j).get(8), trialNum++));
+//                    trials.add(new Trial(i, j, position.get(i).get(6), position.get(i).get(2), trialNum++));
+//                    trials.add(new Trial(i, j, position.get(i).get(2), position.get(i).get(6), trialNum++));
+//                    trials.add(new Trial(i, j, position.get(i).get(8), position.get(i).get(0), trialNum++));
+//                    trials.add(new Trial(i, j, position.get(i).get(4), position.get(i).get(8), trialNum++));
+//                    trials.add(new Trial(i, j, position.get(i).get(4), position.get(i).get(2), trialNum++));
+//                    trials.add(new Trial(i, j, position.get(i).get(4), position.get(i).get(0), trialNum++));
+//                    trials.add(new Trial(i, j, position.get(i).get(4), position.get(i).get(6), trialNum++));
+//                    trials.add(new Trial(i, j, position.get(i).get(6), position.get(i).get(4), trialNum++));
+//                    trials.add(new Trial(i, j, position.get(i).get(0), position.get(i).get(4), trialNum++));
+//                    trials.add(new Trial(i, j, position.get(i).get(2), position.get(i).get(4), trialNum++));
+//                    trials.add(new Trial(i, j, position.get(i).get(8), position.get(i).get(4), trialNum++));
 
                 }
             }
@@ -104,6 +105,16 @@ public class Trialblocks {
 
     public ArrayList<ArrayList<Trial>> getBlocks() {
         return blocks;
+    }
+
+    public void pushBackTrial(Trial trial) {
+        trials.add(trial);
+    }
+
+    public void resetTrialblock() {
+        Set<Trial> set = new HashSet<>(trials);
+        trials.clear();
+        trials.addAll(set);
     }
 
     /**
