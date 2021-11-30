@@ -34,7 +34,7 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
     private final int errors;
     private final Trial currentTrial;
 
-    public DrawingPanel(Experiment experiment, ArrayList<JComponent> drawables) {
+    public DrawingPanel(Experiment experiment, ArrayList<JComponent> drawables, JFrame startFrame, JFrame endFrame) {
         this.drawables = drawables;
         this.experiment = experiment;
         testStart = false;
@@ -50,13 +50,15 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
         this.errors = 0;
         this.currentTrial = trialblock.getBlocks().get(blockNumber - 1).get(trialNumber - 1);
 
-        if (trialNumber % 2 != 0) {
-            this.startFrame = Experiment.getFrames().get(trialblock.getBlocks().get(blockNumber - 1).get(trialNumber - 1).getMonitorEnd() - 1);
-            this.endFrame = Experiment.getFrames().get(trialblock.getBlocks().get(blockNumber - 1).get(trialNumber - 1).getMonitorStart() - 1);
-        } else {
-            this.endFrame = Experiment.getFrames().get(trialblock.getBlocks().get(blockNumber - 1).get(trialNumber - 1).getMonitorEnd() - 1);
-            this.startFrame = Experiment.getFrames().get(trialblock.getBlocks().get(blockNumber - 1).get(trialNumber - 1).getMonitorStart() - 1);
-        }
+        this.startFrame = startFrame;
+        this.endFrame = endFrame;
+//        if (trialNumber % 2 != 0) {
+//            this.startFrame = Experiment.getFrames().get(trialblock.getBlocks().get(blockNumber - 1).get(trialNumber - 1).getMonitorEnd() - 1);
+//            this.endFrame = Experiment.getFrames().get(trialblock.getBlocks().get(blockNumber - 1).get(trialNumber - 1).getMonitorStart() - 1);
+//        } else {
+//            this.endFrame = Experiment.getFrames().get(trialblock.getBlocks().get(blockNumber - 1).get(trialNumber - 1).getMonitorEnd() - 1);
+//            this.startFrame = Experiment.getFrames().get(trialblock.getBlocks().get(blockNumber - 1).get(trialNumber - 1).getMonitorStart() - 1);
+//        }
     }
 
     @Override
@@ -135,7 +137,7 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
                         startColor = Config.STARTFIELD_PRESSED_COLOR;
                         repaint();
 
-                        setStartLogger(e, monitorName, dr, currentFrame);
+                        setStartLogger(e, monitorName, dr);
                         logger.setStartWindowWidth(windowWidth);
                         logger.setStartWindowHeight(windowHeight);
                         logger.setStartMonitorHeight(monitorHeight);
@@ -253,7 +255,7 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
         }
     }
 
-    private void setStartLogger(MouseEvent e, String monitorName, JComponent dr, JFrame currentFrame) {
+    private void setStartLogger(MouseEvent e, String monitorName, JComponent dr) {
         testTime = System.currentTimeMillis();
         double screenRes = Toolkit.getDefaultToolkit().getScreenResolution();
 
