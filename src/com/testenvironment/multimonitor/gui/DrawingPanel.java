@@ -52,13 +52,6 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
 
         this.startFrame = startFrame;
         this.endFrame = endFrame;
-//        if (trialNumber % 2 != 0) {
-//            this.startFrame = Experiment.getFrames().get(trialblock.getBlocks().get(blockNumber - 1).get(trialNumber - 1).getMonitorEnd() - 1);
-//            this.endFrame = Experiment.getFrames().get(trialblock.getBlocks().get(blockNumber - 1).get(trialNumber - 1).getMonitorStart() - 1);
-//        } else {
-//            this.endFrame = Experiment.getFrames().get(trialblock.getBlocks().get(blockNumber - 1).get(trialNumber - 1).getMonitorEnd() - 1);
-//            this.startFrame = Experiment.getFrames().get(trialblock.getBlocks().get(blockNumber - 1).get(trialNumber - 1).getMonitorStart() - 1);
-//        }
     }
 
     @Override
