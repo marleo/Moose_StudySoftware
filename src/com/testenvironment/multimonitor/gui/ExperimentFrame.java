@@ -1,6 +1,5 @@
 package com.testenvironment.multimonitor.gui;
 
-import com.testenvironment.multimonitor.Config;
 import com.testenvironment.multimonitor.experiment.Trialblocks;
 
 import javax.swing.*;

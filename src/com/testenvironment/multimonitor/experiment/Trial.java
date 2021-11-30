@@ -8,7 +8,7 @@ public class Trial {
     private int monitorEnd;
     private Point start;
     private Point end;
-    private int trialNum;
+    private final int trialNum;
     private int errors;
 
     public Trial(int monitorStart, int monitorEnd, Point start, Point end, int trialNum) {

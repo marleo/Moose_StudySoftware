@@ -22,7 +22,7 @@ public class Experiment extends JPanel {
     private final Logger logger;
     private final MouseLogger mouseLogger;
     private final Trialblocks trialblocks;
-    private ArrayList<ArrayList<Trial>> blocks;
+    private final ArrayList<ArrayList<Trial>> blocks;
     private int currentTrial;
     private int currentTrialInSet;
     private int currentBlock;
@@ -55,14 +55,14 @@ public class Experiment extends JPanel {
     }
 
     public void drawFrames(JFrame startFrame, JFrame endFrame) {
-        if(currentTrial >= blocks.get(currentBlock).size()) {
+        if (currentTrial >= blocks.get(currentBlock).size()) {
             currentBlock++;
             currentTrial = 0;
             trialblocks.resetTrialblock();
             playFinished();
         }
 
-        if(currentBlock >= blocks.size()) {
+        if (currentBlock >= blocks.size()) {
             logger.endLog();
             mouseLogger.endLog();
             System.exit(0);
@@ -116,6 +116,19 @@ public class Experiment extends JPanel {
         currentTrial++;
     }
 
+    private void playFinished() {
+        AudioInputStream finishedIn;
+        Clip clip;
+
+        try {
+            finishedIn = AudioSystem.getAudioInputStream(new File(Config.SOUND_FINISHED_PATH));
+            clip = AudioSystem.getClip();
+            clip.open(finishedIn);
+            clip.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public int getBlock() {
         return this.currentBlock;
@@ -129,17 +142,5 @@ public class Experiment extends JPanel {
         return this.currentTrialInSet;
     }
 
-    private void playFinished() {
-        AudioInputStream finishedIn;
-        Clip clip;
 
-        try {
-            finishedIn = AudioSystem.getAudioInputStream(new File(Config.SOUND_FINISHED_PATH));
-            clip = AudioSystem.getClip();
-            clip.open(finishedIn);
-            clip.start();
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-    }
 }

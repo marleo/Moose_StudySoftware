@@ -49,6 +49,8 @@ public class Logger {
     private long trialStartTime;
     private long trialEndTime;
     private long trialTime;
+    private double pixelSize;
+    private double distanceMM;
 
 
     private Logger() {
@@ -87,6 +89,8 @@ public class Logger {
         this.trialStartTime = 0;
         this.trialEndTime = 0;
         this.trialTime = 0;
+        this.pixelSize = 0;
+        this.distanceMM = 0;
     }
 
     public static Logger getLogger() {
@@ -98,8 +102,8 @@ public class Logger {
 
     public void createLogFile() {
         try {
-            while(new File(Config.LOG_PATH + Config.MOOSE_LOG + Config.USER_ID + ".txt").exists()) {
-                Config.USER_ID ++;
+            while (new File(Config.LOG_PATH + Config.MOOSE_LOG + Config.USER_ID + ".txt").exists()) {
+                Config.USER_ID++;
             }
             logFile = new PrintWriter(new FileWriter(Config.LOG_PATH + Config.MOOSE_LOG + Config.USER_ID + ".txt"));
         } catch (Exception e) {
@@ -109,10 +113,11 @@ public class Logger {
 
     private String createHeaderString() {
         return "participant" + ";" +
-                "trialNumber" + ";" +
                 "blockNumber" + ";" +
+                "trialNumber" + ";" +
                 "trialNumberInSet" + ";" +
                 "distancePx" + ";" +
+                "distanceMM" + ";" +
                 "movementDirection" + ";" +
                 "testType" + ";" +
                 "startMonitor" + ";" +
@@ -143,19 +148,20 @@ public class Logger {
                 "trialTime";
     }
 
-    public void generateLogString(){
+    public void generateLogString() {
 
-        if(this.targetMonitor > this.startMonitor) {
+        if (this.targetMonitor > this.startMonitor) {
             this.movementDirection = "Right";
         } else {
             this.movementDirection = "Left";
         }
 
         String logString = participant + ";" +
-                trialNumberShown + ";" +
                 blockNumber + ";" +
+                trialNumberShown + ";" +
                 trialNumberInSet + ";" +
                 distancePx + ";" +
+                distanceMM + ";" +
                 movementDirection + ";" +
                 testtype + ";" +
                 startMonitor + ";" +
@@ -202,6 +208,18 @@ public class Logger {
     public void endLog() {
         System.out.println("Logging ended");
         logFile.close();
+    }
+
+    public void setDistanceMM(double distanceMM) {
+        this.distanceMM = distanceMM;
+    }
+
+    public double getPixelSize() {
+        return this.pixelSize;
+    }
+
+    public void setPixelSize(double pixelSize) {
+        this.pixelSize = pixelSize;
     }
 
     public void setTrialNumberInSet(int trialNumberInSet) {

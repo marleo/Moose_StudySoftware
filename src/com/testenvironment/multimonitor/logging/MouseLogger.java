@@ -13,9 +13,8 @@ import java.nio.file.StandardOpenOption;
 public class MouseLogger {
 
     private static MouseLogger instance = null;
-    private PrintWriter logFile;
-
     private final int participant;
+    private PrintWriter logFile;
     private int trialNumber;
     private int blockNumber;
     private int monitorNr;
@@ -62,8 +61,8 @@ public class MouseLogger {
 
     public void createLogFile() {
         try {
-            while(new File(Config.LOG_PATH + Config.MOUSE_LOG + Config.USER_ID + ".txt").exists()) {
-                Config.USER_ID ++;
+            while (new File(Config.LOG_PATH + Config.MOUSE_LOG + Config.USER_ID + ".txt").exists()) {
+                Config.USER_ID++;
             }
             logFile = new PrintWriter(new FileWriter(Config.LOG_PATH + Config.MOUSE_LOG + Config.USER_ID + ".txt"));
         } catch (Exception e) {
@@ -92,7 +91,7 @@ public class MouseLogger {
                 ;
     }
 
-    public void generateLogString(){
+    public void generateLogString() {
         String logString = participant + ";" +
                 trialNumber + ";" +
                 blockNumber + ";" +
@@ -109,8 +108,7 @@ public class MouseLogger {
                 mouseEntered + ";" +
                 mouseExited + ";" +
                 mouseMoved + ";" +
-                System.currentTimeMillis() + ";"
-                ;
+                System.currentTimeMillis() + ";";
 
         writeToLog(logString);
 
