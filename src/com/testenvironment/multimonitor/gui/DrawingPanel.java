@@ -282,6 +282,8 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
         logger.setTrialNumberInSet(experiment.getTrialNumberInSet());
         logger.setPixelSize(25.4 / screenRes);
         logger.setDistanceMM(logger.getDistancePx() * logger.getPixelSize());
+        logger.setTargetHeight(currentTrial.getGoalHeight());
+        logger.setTargetWidth(currentTrial.getGoalWidth());
 
         if (Config.GOAL_IS_CIRCLE) {
             logger.setTargetCenterX(((GoalCircle) dr).getCenterX());

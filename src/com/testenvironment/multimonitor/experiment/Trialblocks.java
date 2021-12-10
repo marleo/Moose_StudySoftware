@@ -82,10 +82,9 @@ public class Trialblocks {
         Add more Trials here
      */
     public void generateTrials() {
-        addTrial(3, 1, 0, 0, 10, 25);
-        addTrial(1, 3, 0, 0, 10, 25);
-        addTrial(3, 2, 0, 0, 10, 25);
-        addTrial(2, 3, 0, 0, 10, 25);
+        addTrial(2, 1, 0, 0, 10, 10);
+        addTrial(1, 2, 0, 0, 15, 15);
+
 
         blocks.add(trials);
 

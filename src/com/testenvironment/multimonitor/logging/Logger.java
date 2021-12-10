@@ -51,6 +51,9 @@ public class Logger {
     private long trialTime;
     private double pixelSize;
     private double distanceMM;
+    private boolean isTargetCircle;
+    private int targetWidth;
+    private int targetHeight;
 
 
     private Logger() {
@@ -81,6 +84,9 @@ public class Logger {
         this.targetPosY = 0;
         this.targetCenterX = 0;
         this.targetCenterY = 0;
+        this.isTargetCircle = Config.GOAL_IS_CIRCLE;
+        this.targetWidth = 0;
+        this.targetHeight = 0;
         this.startPointPressedX = 0;
         this.startPointPressedY = 0;
         this.targetPointPressedX = 0;
@@ -138,6 +144,9 @@ public class Logger {
                 "targetPosY" + ";" +
                 "targetCenterX" + ";" +
                 "targetCenterY" + ";" +
+                "isTargetCircle" + ";" +
+                "targetWidth" + ";" +
+                "targetHeight" + ";" +
                 "startPointPressedX" + ";" +
                 "startPointPressedY" + ";" +
                 "targetPointPressedX" + ";" +
@@ -182,6 +191,9 @@ public class Logger {
                 targetPosY + ";" +
                 targetCenterX + ";" +
                 targetCenterY + ";" +
+                isTargetCircle + ";" +
+                targetWidth + ";" +
+                targetHeight + ";" +
                 startPointPressedX + ";" +
                 startPointPressedY + ";" +
                 targetPointPressedX + ";" +
@@ -208,6 +220,14 @@ public class Logger {
     public void endLog() {
         System.out.println("Logging ended");
         logFile.close();
+    }
+
+    public void setTargetWidth(int targetWidth) {
+        this.targetWidth = targetWidth;
+    }
+
+    public void setTargetHeight(int targetHeight) {
+        this.targetHeight = targetHeight;
     }
 
     public void setDistanceMM(double distanceMM) {
