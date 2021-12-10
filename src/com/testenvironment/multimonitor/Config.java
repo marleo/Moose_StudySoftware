@@ -7,16 +7,13 @@ public class Config {
     /**
      * Logging
      */
-    public static int USER_ID = 1;
-    public static int BLOCKS = 4;
+    public static int USER_ID = 1; //increments + 1 everytime the program gets opened
+    public static int BLOCKS = 4; //Number of TrialBlocks
     public static int[] MONITOR_ZONES = {5, 5}; //Rows, Cols
-    public static String LOG_PATH = "logs/";
+    public static String LOG_PATH = "logs/"; //Directory, where logs get stored (has to be created beforehand)
     public static String MOUSE_LOG = "events_";
     public static String MOOSE_LOG = "moose_";
     public static String TESTTYPE = "NO_MOOSE";
-    public static String SOUND_ERROR_PATH = "sounds/error.wav";
-    public static String SOUND_SUCCESS_PATH = "sounds/success.wav";
-    public static String SOUND_FINISHED_PATH = "sounds/finished.wav";
 
     /**
      * Testpanel
@@ -53,4 +50,12 @@ public class Config {
      */
     public static Color GOALCIRCLE_COLOR = new Color(208, 33, 33);
     public static boolean GOAL_IS_CIRCLE = true;
+    //Height and Width is set per Test in Trialblocks.java
+
+    /**
+     * Ressources
+     */
+    public static String SOUND_ERROR_PATH = "sounds/error.wav";
+    public static String SOUND_SUCCESS_PATH = "sounds/success.wav";
+    public static String SOUND_FINISHED_PATH = "sounds/finished.wav";
 }
