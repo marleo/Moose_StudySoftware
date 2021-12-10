@@ -41,9 +41,6 @@ public class GoalCircle extends JComponent {
         Getter's & Setter's
      */
 
-    public int getRadius() {
-        return radius;
-    }
 
     public int getDiam() {
         return diam;
@@ -61,8 +58,5 @@ public class GoalCircle extends JComponent {
         return centerX;
     }
 
-    public int getCenterY() {
-        return centerY;
-    }
 
 }

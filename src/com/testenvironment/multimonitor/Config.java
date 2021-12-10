@@ -9,7 +9,7 @@ public class Config {
      */
     public static int USER_ID = 1;
     public static int BLOCKS = 4;
-    public static int[] MONITOR_ZONES = {3, 3}; //Rows, Cols
+    public static int[] MONITOR_ZONES = {5, 5}; //Rows, Cols
     public static String LOG_PATH = "logs/";
     public static String MOUSE_LOG = "events_";
     public static String MOOSE_LOG = "moose_";
@@ -21,7 +21,8 @@ public class Config {
     /**
      * Testpanel
      */
-    public static Color TESTBACKGROUND_COLOR = Color.LIGHT_GRAY;
+    public static Color START_BACKGROUNDCOLOR = new Color(230, 255, 230);
+    public static Color GOAL_BACKGROUNDCOLOR = new Color(255, 230, 230);
     public static int PADDING = 15;
 
     /**

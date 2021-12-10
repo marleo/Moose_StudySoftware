@@ -1,8 +1,8 @@
 package com.testenvironment.multimonitor.gui;
 
 import com.testenvironment.multimonitor.Config;
-import com.testenvironment.multimonitor.experiment.Experiment;
 import com.testenvironment.multimonitor.experiment.Constellation;
+import com.testenvironment.multimonitor.experiment.Experiment;
 import com.testenvironment.multimonitor.experiment.Trialblocks;
 import com.testenvironment.multimonitor.logging.Logger;
 import com.testenvironment.multimonitor.logging.MouseLogger;
@@ -23,18 +23,15 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
     private static long testTime;
     private final ArrayList<JComponent> drawables;
     private final Experiment experiment;
-    private final JFrame startFrame;
-    private final JFrame endFrame;
     private final Logger logger;
     private final MouseLogger mouseLogger;
-    private Color startColor;
     private final int blockNumber;
     private final int trialNumber;
     private final Trialblocks trialblock;
-    private final int errors;
     private final Constellation currentTrial;
+    private Color startColor;
 
-    public DrawingPanel(Experiment experiment, ArrayList<JComponent> drawables, JFrame startFrame, JFrame endFrame) {
+    public DrawingPanel(Experiment experiment, ArrayList<JComponent> drawables) {
         this.drawables = drawables;
         this.experiment = experiment;
         testStart = false;
@@ -47,10 +44,7 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
         this.startColor = Config.STARTFIELD_COLOR;
         this.blockNumber = experiment.getBlock() + 1;
         this.trialNumber = experiment.getTrial() + 1;
-        this.errors = 0;
         this.currentTrial = trialblock.getBlocks().get(blockNumber - 1).get(trialNumber - 1);
-        this.startFrame = startFrame;
-        this.endFrame = endFrame;
     }
 
     @Override
@@ -68,11 +62,8 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-//        this.setBackground(Config.TESTBACKGROUND_COLOR);
-        g2d.setColor(new Color(230, 255, 230)); //new
-        g2d.fillRect(0, 0, this.getWidth(), this.getHeight()); //new
-
-        System.out.println("Drawing...");
+        g2d.setColor(Config.START_BACKGROUNDCOLOR);
+        g2d.fillRect(0, 0, this.getWidth(), this.getHeight());
 
         for (JComponent draw : drawables) {
             if (draw instanceof StartField) {
@@ -81,9 +72,7 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
                 int a = draw.getWidth();
                 int b = draw.getHeight();
 
-                System.out.println("********************");
-//                this.setBackground(new Color(230, 255, 230));
-                g2d.setColor(new Color(230, 255, 230)); //new
+                g2d.setColor(Config.START_BACKGROUNDCOLOR);
                 g2d.fillRect(0, 0, this.getWidth(), this.getHeight());
 
                 g2d.setColor(startColor);
@@ -92,18 +81,15 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
                 g2d.setFont(new Font(Config.FONT_STYLE, Font.PLAIN, Config.STARTFIELD_FONT_SIZE));
                 g2d.drawString("Start", c + a / 4, d + (3 * b / 4));
             } else if (draw instanceof GoalCircle) {
-//                this.setBackground(new Color(255, 230, 230));
-                g2d.setColor(new Color(255, 230, 230)); //new
+                g2d.setColor(Config.GOAL_BACKGROUNDCOLOR);
                 g2d.fillRect(0, 0, this.getWidth(), this.getHeight());
-
                 g2d.setColor(Config.GOALCIRCLE_COLOR);
                 g2d.fillOval(((GoalCircle) draw).getTlX(), ((GoalCircle) draw).getTlY(), ((GoalCircle) draw).getDiam(), ((GoalCircle) draw).getDiam());
             } else if (draw instanceof GoalRect) {
-                g2d.setColor(new Color(255, 230, 230)); //new
+                g2d.setColor(Config.GOAL_BACKGROUNDCOLOR);
                 g2d.fillRect(0, 0, this.getWidth(), this.getHeight());
-
                 g2d.setColor(Config.GOALCIRCLE_COLOR);
-                g2d.fillRect(((GoalRect) draw).getTlX(), ((GoalRect) draw).getTlY(), draw.getWidth() , draw.getHeight());
+                g2d.fillRect(((GoalRect) draw).getTlX(), ((GoalRect) draw).getTlY(), draw.getWidth(), draw.getHeight());
             }
         }
 
@@ -129,7 +115,6 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
             if (dr instanceof StartField) {
                 isInStart = ((StartField) dr).isInside(e.getX(), e.getY());
                 if (isInStart) {
-                    System.out.println("Test started..."); //TODO: REMOVE
                     if (!testStart) {
                         testStart = true;
 
@@ -146,7 +131,7 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
             } else if (dr instanceof GoalCircle) {
                 isInGoal = ((GoalCircle) dr).isInside(e.getX(), e.getY());
                 checkGoalConditions(e, isInGoal, monitorName, windowWidth, windowHeight, monitorWidth, monitorHeight, dr);
-            } else if(dr instanceof GoalRect) {
+            } else if (dr instanceof GoalRect) {
                 isInGoal = ((GoalRect) dr).isInside(e.getX(), e.getY());
                 checkGoalConditions(e, isInGoal, monitorName, windowWidth, windowHeight, monitorWidth, monitorHeight, dr);
             }
@@ -170,7 +155,6 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
                 logger.setErrors(this.currentTrial.getAndResetErrors());
                 logger.generateLogString();
                 experiment.drawFrames();
-
             }
         } else {
             if (testStart) {
@@ -299,7 +283,7 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
         logger.setPixelSize(25.4 / screenRes);
         logger.setDistanceMM(logger.getDistancePx() * logger.getPixelSize());
 
-        if(Config.GOAL_IS_CIRCLE) {
+        if (Config.GOAL_IS_CIRCLE) {
             logger.setTargetCenterX(((GoalCircle) dr).getCenterX());
             logger.setTargetCenterY(((GoalCircle) dr).getCenterX());
             logger.setDistancePx(((GoalCircle) dr).distanceToMid(e.getX(), e.getY()));

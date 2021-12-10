@@ -40,12 +40,8 @@ public class ExperimentFrame extends JFrame {
             f.setVisible(true);
             frames.add(f);
             trialblocks.addMonitor(f.getWidth(), f.getHeight(), f.getInsets().top);
-
-            //trialblocks.addMonitor(gd.getDefaultConfiguration().getDevice().getDisplayMode().getWidth(),
-            //        gd.getDefaultConfiguration().getDevice().getDisplayMode().getHeight());
             seq++;
         }
-        trialblocks.printMonitorPositions();
         trialblocks.generateTrials();
     }
 

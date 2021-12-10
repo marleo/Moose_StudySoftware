@@ -41,9 +41,6 @@ public class GoalRect extends JComponent {
        Getter's & Setter's
     */
 
-    public void setColor(Color color) {
-        this.color = color;
-    }
 
     public int getWidth() {
         return width;
@@ -65,7 +62,4 @@ public class GoalRect extends JComponent {
         return centerX;
     }
 
-    public int getCenterY() {
-        return centerY;
-    }
 }

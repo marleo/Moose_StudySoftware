@@ -41,10 +41,6 @@ public class StartField extends JComponent {
        Getter's & Setter's
     */
 
-    public void setColor(Color color) {
-        this.color = color;
-    }
-
     public int getWidth() {
         return width;
     }

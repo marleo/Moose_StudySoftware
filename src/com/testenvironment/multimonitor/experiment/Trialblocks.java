@@ -4,7 +4,6 @@ import com.testenvironment.multimonitor.Config;
 
 import java.awt.*;
 import java.util.*;
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class Trialblocks {
@@ -51,8 +50,8 @@ public class Trialblocks {
 
         xyCoords.add(new Point(xCoord, yCoord));
 
-        for(int i = 1; i < monitorRows; i++) {
-            for(int j = 1; j < monitorCols; j++) {
+        for (int i = 1; i < monitorRows; i++) {
+            for (int j = 1; j < monitorCols; j++) {
                 int xStep = (rightEdge - leftEdge) / (monitorCols - 1);
                 xCoord += xStep;
                 xyCoords.add(new Point(xCoord, yCoord));
@@ -79,66 +78,70 @@ public class Trialblocks {
         ));
     }
 
+    /*
+        Add more Trials here
+     */
     public void generateTrials() {
         addTrial(3, 1, 0, 0, 10, 25);
-        addTrial(1, 2, 1, 1, 10, 25);
-        addTrial(2, 3, 2, 2, 10, 25);
-        addTrial(3, 1, 3, 3, 10, 25);
-        addTrial(1, 3, 4, 4, 10, 25);
-        addTrial(3, 2, 5, 5, 10, 25);
-        addTrial(2, 1, 4, 4, 10, 20);
+        addTrial(1, 3, 0, 0, 10, 25);
+        addTrial(3, 2, 0, 0, 10, 25);
+        addTrial(2, 3, 0, 0, 10, 25);
 
+        blocks.add(trials);
 
-        for (int i = 0; i < Config.BLOCKS; i++) {
+        for (int i = 1; i < Config.BLOCKS; i++) {
             //Collections.shuffle(trials);
             ArrayList<Constellation> nextBlock = new ArrayList<>();
             ArrayList<ArrayList<Constellation>> seperateTrials = new ArrayList<>();
 
             // Get different startMonitors
             ArrayList<Integer> maxStart = new ArrayList<>();
-            for(Constellation t : trials) {
-                if(!maxStart.contains(t.getMonitorStart())) {
+            for (Constellation t : trials) {
+                if (!maxStart.contains(t.getMonitorStart())) {
                     maxStart.add(t.getMonitorStart());
                 }
             }
 
             //Seperate different startMonitors in seperate Lists
-            for(int j = 1; j <= maxStart.size(); j++) {
+            for (int j = 1; j <= numMonitors; j++) {
                 int finalX = j;
-                ArrayList<Constellation> filteredTrials= trials.stream()
-                        .filter(n -> n.getMonitorStart() == finalX).collect(Collectors.toCollection(ArrayList::new));
+                ArrayList<Constellation> filteredTrials = trials.stream()
+                        .filter(n -> n.getMonitorStart() == finalX)
+                        .collect(Collectors.toCollection(ArrayList::new));
                 Collections.shuffle(filteredTrials);
                 seperateTrials.add(filteredTrials);
             }
 
             //Stitch together new Block but keep order endMonitor = new StartMonitor
-            for(ArrayList<Constellation> constellations : seperateTrials) {
-                for(int x = 0; x < constellations.size(); x++) {
+            for (ArrayList<Constellation> constellations : seperateTrials) {
+
+                for (int x = 0; x < constellations.size(); x++) {
                     nextBlock.add(constellations.get(x));
                     boolean found = false;
 
-                    for(ArrayList<Constellation> constellations1 : seperateTrials) {
-                        for(Constellation constellation : constellations1) {
-                            if(constellation.getMonitorStart() == constellations.get(x).getMonitorEnd()) {
+                    for (ArrayList<Constellation> constellations1 : seperateTrials) {
+                        for (Constellation constellation : constellations1) {
+                            if (constellation.getMonitorStart() == constellations.get(x).getMonitorEnd()) {
                                 nextBlock.add(constellation);
                                 constellations1.remove(constellation);
                                 found = true;
                                 break;
                             }
                         }
-                        if(found) break;
+                        if (found) break;
                     }
                     constellations.remove(constellations.get(x));
                 }
             }
-            System.out.println("New Trialblock: ");
-            for(Constellation constellation : nextBlock) {
+            /*
+             * Debug: Prints Trialblocks with corresponding monitors & trialnumbers
+             */
+            System.out.println("Trialblock " + (i + 1) + ":");
+            for (Constellation constellation : nextBlock) {
                 System.out.println(constellation.getMonitorStart() + " - " + constellation.getMonitorEnd() + ": " + constellation.getTrialNum());
             }
-            blocks.add(trials);
+            blocks.add(nextBlock);
         }
-
-        System.out.println("Trials: " + trials.size());
     }
 
     public ArrayList<ArrayList<Constellation>> getBlocks() {
@@ -154,14 +157,4 @@ public class Trialblocks {
         trials.clear();
         trials.addAll(set);
     }
-
-    /**
-     * For Debugging -> Prints map to console
-     */
-    public void printMonitorPositions() {
-        System.out.println("---------------------------");
-        position.forEach((key, value) -> System.out.println("Monitor " + key + ": " + Arrays.toString(value.toArray())));
-        System.out.println("---------------------------");
-    }
-
 }
