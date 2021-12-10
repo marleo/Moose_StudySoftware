@@ -35,8 +35,8 @@ public class ExperimentFrame extends JFrame {
             //f.setResizable(false);
             f.setLayout(new BorderLayout());
             f.setTitle("Monitor " + seq);
-            f.setExtendedState(Frame.MAXIMIZED_BOTH);
-            //f.setSize(600, 600);
+            //f.setExtendedState(Frame.MAXIMIZED_BOTH);
+            f.setSize(600, 600);
             f.setVisible(true);
             frames.add(f);
             trialblocks.addMonitor(f.getWidth(), f.getHeight(), f.getInsets().top);

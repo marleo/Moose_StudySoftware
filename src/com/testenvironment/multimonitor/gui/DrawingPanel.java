@@ -2,7 +2,7 @@ package com.testenvironment.multimonitor.gui;
 
 import com.testenvironment.multimonitor.Config;
 import com.testenvironment.multimonitor.experiment.Experiment;
-import com.testenvironment.multimonitor.experiment.Trial;
+import com.testenvironment.multimonitor.experiment.Constellation;
 import com.testenvironment.multimonitor.experiment.Trialblocks;
 import com.testenvironment.multimonitor.logging.Logger;
 import com.testenvironment.multimonitor.logging.MouseLogger;
@@ -32,7 +32,7 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
     private final int trialNumber;
     private final Trialblocks trialblock;
     private final int errors;
-    private final Trial currentTrial;
+    private final Constellation currentTrial;
 
     public DrawingPanel(Experiment experiment, ArrayList<JComponent> drawables, JFrame startFrame, JFrame endFrame) {
         this.drawables = drawables;
@@ -49,7 +49,6 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
         this.trialNumber = experiment.getTrial() + 1;
         this.errors = 0;
         this.currentTrial = trialblock.getBlocks().get(blockNumber - 1).get(trialNumber - 1);
-
         this.startFrame = startFrame;
         this.endFrame = endFrame;
     }
@@ -82,6 +81,7 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
                 int a = draw.getWidth();
                 int b = draw.getHeight();
 
+                System.out.println("********************");
 //                this.setBackground(new Color(230, 255, 230));
                 g2d.setColor(new Color(230, 255, 230)); //new
                 g2d.fillRect(0, 0, this.getWidth(), this.getHeight());
@@ -98,6 +98,12 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
 
                 g2d.setColor(Config.GOALCIRCLE_COLOR);
                 g2d.fillOval(((GoalCircle) draw).getTlX(), ((GoalCircle) draw).getTlY(), ((GoalCircle) draw).getDiam(), ((GoalCircle) draw).getDiam());
+            } else if (draw instanceof GoalRect) {
+                g2d.setColor(new Color(255, 230, 230)); //new
+                g2d.fillRect(0, 0, this.getWidth(), this.getHeight());
+
+                g2d.setColor(Config.GOALCIRCLE_COLOR);
+                g2d.fillRect(((GoalRect) draw).getTlX(), ((GoalRect) draw).getTlY(), draw.getWidth() , draw.getHeight());
             }
         }
 
@@ -139,36 +145,42 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
                 }
             } else if (dr instanceof GoalCircle) {
                 isInGoal = ((GoalCircle) dr).isInside(e.getX(), e.getY());
-                if (isInGoal) {
-                    if (testStart) {
-                        playSuccess();
-
-                        setTargetLogger(e, monitorName, dr);
-                        logger.setTargetWindowWidth(windowWidth);
-                        logger.setTargetWindowHeight(windowHeight);
-                        logger.setTargetMonitorWidth(monitorWidth);
-                        logger.setTargetMonitorHeight(monitorHeight);
-                        logger.setErrors(this.currentTrial.getAndResetErrors());
-                        logger.generateLogString();
-
-                        experiment.drawFrames(startFrame, endFrame);
-                    }
-                } else {
-                    if (testStart) {
-                        playError();
-
-                        setTargetLogger(e, monitorName, dr);
-                        this.currentTrial.setError();
-                        trialblock.pushBackTrial(this.currentTrial);
-                        experiment.drawFrames(startFrame, endFrame);
-                    }
-                }
+                checkGoalConditions(e, isInGoal, monitorName, windowWidth, windowHeight, monitorWidth, monitorHeight, dr);
+            } else if(dr instanceof GoalRect) {
+                isInGoal = ((GoalRect) dr).isInside(e.getX(), e.getY());
+                checkGoalConditions(e, isInGoal, monitorName, windowWidth, windowHeight, monitorWidth, monitorHeight, dr);
             }
             setMouseLogger(e, currentFrame);
             mouseLogger.setMouseReleased(1);
             mouseLogger.generateLogString();
         }
 
+    }
+
+    private void checkGoalConditions(MouseEvent e, boolean isInGoal, String monitorName, int windowWidth, int windowHeight, int monitorWidth, int monitorHeight, JComponent dr) {
+        if (isInGoal) {
+            if (testStart) {
+                playSuccess();
+
+                setTargetLogger(e, monitorName, dr);
+                logger.setTargetWindowWidth(windowWidth);
+                logger.setTargetWindowHeight(windowHeight);
+                logger.setTargetMonitorWidth(monitorWidth);
+                logger.setTargetMonitorHeight(monitorHeight);
+                logger.setErrors(this.currentTrial.getAndResetErrors());
+                logger.generateLogString();
+                experiment.drawFrames();
+
+            }
+        } else {
+            if (testStart) {
+                playError();
+                setTargetLogger(e, monitorName, dr);
+                this.currentTrial.setError();
+                trialblock.pushBackTrial(this.currentTrial);
+                experiment.drawFrames();
+            }
+        }
     }
 
     @Override
@@ -277,9 +289,7 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
         logger.setTrialTime(testFinishedTime);
         logger.setTargetPosX(dr.getX());
         logger.setTargetPosY(dr.getY());
-        logger.setTargetCenterX(((GoalCircle) dr).getCenterX());
-        logger.setTargetCenterY(((GoalCircle) dr).getCenterX());
-        logger.setDistancePx(((GoalCircle) dr).distanceToMid(e.getX(), e.getY()));
+
         logger.setTargetPointPressedX(e.getX());
         logger.setTargetPointPressedY(e.getY());
         logger.setTargetMonitor(Integer.parseInt(monitorName.replaceAll("[^0-9]", "")));
@@ -288,6 +298,16 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
         logger.setTrialNumberInSet(experiment.getTrialNumberInSet());
         logger.setPixelSize(25.4 / screenRes);
         logger.setDistanceMM(logger.getDistancePx() * logger.getPixelSize());
+
+        if(Config.GOAL_IS_CIRCLE) {
+            logger.setTargetCenterX(((GoalCircle) dr).getCenterX());
+            logger.setTargetCenterY(((GoalCircle) dr).getCenterX());
+            logger.setDistancePx(((GoalCircle) dr).distanceToMid(e.getX(), e.getY()));
+        } else {
+            logger.setTargetCenterX(((GoalRect) dr).getCenterX());
+            logger.setTargetCenterY(((GoalRect) dr).getCenterX());
+            logger.setDistancePx(((GoalRect) dr).distanceToMid(e.getX(), e.getY()));
+        }
     }
 
     private void setMouseLogger(MouseEvent e, JFrame currentFrame) {

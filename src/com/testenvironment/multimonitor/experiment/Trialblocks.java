@@ -4,19 +4,23 @@ import com.testenvironment.multimonitor.Config;
 
 import java.awt.*;
 import java.util.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Trialblocks {
     private static Trialblocks instance = null;
     private final Map<Integer, ArrayList<Point>> position;
-    private final ArrayList<Trial> trials;
-    private final ArrayList<ArrayList<Trial>> blocks;
+    private final ArrayList<Constellation> trials;
+    private final ArrayList<ArrayList<Constellation>> blocks;
     private int numMonitors;
+    private int trialNum;
 
     private Trialblocks() {
         this.numMonitors = 0;
         this.position = new HashMap<>();
         this.trials = new ArrayList<>();
         this.blocks = new ArrayList<>();
+        this.trialNum = 0;
     }
 
     public static Trialblocks getTrialblocks() {
@@ -26,124 +30,127 @@ public class Trialblocks {
         return instance;
     }
 
-    /**
-     * Add Monitor to Hashmap positions with all 9 possible fieldpositions
-     *
-     * @param monitorWidth  MonitorWidth
-     * @param monitorHeight MonitorHeight
-     */
     public void addMonitor(int monitorWidth, int monitorHeight, int insetSize) {
         this.numMonitors++; //start with monitor 1
+
+        int monitorRows = Config.MONITOR_ZONES[0];
+        int monitorCols = Config.MONITOR_ZONES[1];
 
         int rectWidth = Config.STARTFIELD_WIDTH;
         int rectHeight = Config.STARTFIELD_HEIGHT;
         int padding = Config.PADDING;
         ArrayList<Point> xyCoords = new ArrayList<>();
 
-        // Field 3x3
-        int xLeft = padding + rectWidth / 2;
-        int xMid = monitorWidth / 2;
-        int xRight = monitorWidth - rectWidth / 2 - padding;
-        int yTop = rectHeight + insetSize + padding;
-        int yMid = monitorHeight / 2 - insetSize;
-        int yBottom = monitorHeight - rectHeight / 2 - insetSize - padding;
+        int leftEdge = padding + rectWidth / 2;
+        int rightEdge = monitorWidth - rectWidth / 2 - padding;
+        int topEdge = rectHeight + insetSize + padding;
+        int bottomEdge = monitorHeight - rectHeight / 2 - insetSize - padding;
 
-        // Field 5x5
-        int xLeftMid = xMid / 2 + padding;
-        int xRightMid = xMid + xMid / 2 - padding;
-        int yTopMid = yMid / 2 + padding;
-        int yBottomMid = yMid + yMid / 2 - padding;
+        int xCoord = leftEdge;
+        int yCoord = topEdge;
 
-        // 3x3
-        xyCoords.add(new Point(xLeft, yTop));       //Top Left
-        xyCoords.add(new Point(xLeftMid, yTop));
-        xyCoords.add(new Point(xMid, yTop));        //Top Mid
-        xyCoords.add(new Point(xRightMid, yTop));
-        xyCoords.add(new Point(xRight, yTop));      //Top Right
-        xyCoords.add(new Point(xLeft, yTopMid));
-        xyCoords.add(new Point(xLeftMid, yTopMid));
-        xyCoords.add(new Point(xMid, yTopMid));
-        xyCoords.add(new Point(xRightMid, yTopMid));
-        xyCoords.add(new Point(xRight, yTopMid));
-        xyCoords.add(new Point(xLeft, yMid));       //Mid Left
-        xyCoords.add(new Point(xLeftMid, yMid));
-        xyCoords.add(new Point(xMid, yMid));        //Mid Mid
-        xyCoords.add(new Point(xRightMid, yMid));
-        xyCoords.add(new Point(xRight, yMid));      //Mid Right
-        xyCoords.add(new Point(xLeft, yBottomMid));
-        xyCoords.add(new Point(xLeftMid, yBottomMid));
-        xyCoords.add(new Point(xMid, yBottomMid));
-        xyCoords.add(new Point(xRightMid, yBottomMid));
-        xyCoords.add(new Point(xRight, yBottomMid));
-        xyCoords.add(new Point(xLeft, yBottom));    //Bottom Left
-        xyCoords.add(new Point(xLeftMid, yBottom));
-        xyCoords.add(new Point(xMid, yBottom));     //Bottom Mid
-        xyCoords.add(new Point(xRightMid, yBottom));
-        xyCoords.add(new Point(xRight, yBottom));   //Bottom Right
+        xyCoords.add(new Point(xCoord, yCoord));
+
+        for(int i = 1; i < monitorRows; i++) {
+            for(int j = 1; j < monitorCols; j++) {
+                int xStep = (rightEdge - leftEdge) / (monitorCols - 1);
+                xCoord += xStep;
+                xyCoords.add(new Point(xCoord, yCoord));
+            }
+            int yStep = (bottomEdge - topEdge) / (monitorRows - 1);
+            yCoord += yStep;
+            xCoord = leftEdge;
+            xyCoords.add(new Point(xCoord, yCoord));
+        }
 
         position.put(numMonitors, xyCoords);
     }
 
+    public void addTrial(int monitorStart, int monitorGoal, int posStart, int posGoal, int goalWidth, int goalHeight) {
+
+        trials.add(new Constellation(
+                monitorStart,
+                monitorGoal,
+                position.get(monitorStart).get(posStart),
+                position.get(monitorGoal).get(posGoal),
+                trialNum++,
+                goalWidth,
+                goalHeight
+        ));
+    }
+
     public void generateTrials() {
-        int trialNum = 0;
-        for (int i = 1; i <= Config.MAX_MONITOR; i++) {
-            for (int j = Config.MAX_MONITOR; j > 1; j--) {
-                if (i != j) {
-                    //Same Positions
-                    trials.add(new Trial(i, j, position.get(i).get(14), position.get(j).get(10), trialNum++));
-                    trials.add(new Trial(i, j, position.get(i).get(4), position.get(j).get(0), trialNum++));
-                    trials.add(new Trial(i, j, position.get(i).get(24), position.get(j).get(20), trialNum++));
-                    trials.add(new Trial(i, j, position.get(i).get(2), position.get(j).get(2), trialNum++));
-                    trials.add(new Trial(i, j, position.get(i).get(12), position.get(j).get(12), trialNum++));
-                    trials.add(new Trial(i, j, position.get(i).get(22), position.get(j).get(22), trialNum++));
-                    trials.add(new Trial(i, j, position.get(i).get(20), position.get(j).get(24), trialNum++));
-                    trials.add(new Trial(i, j, position.get(i).get(0), position.get(j).get(4), trialNum++));
-                    trials.add(new Trial(i, j, position.get(i).get(10), position.get(j).get(14), trialNum++));
+        addTrial(3, 1, 0, 0, 10, 25);
+        addTrial(1, 2, 1, 1, 10, 25);
+        addTrial(2, 3, 2, 2, 10, 25);
+        addTrial(3, 1, 3, 3, 10, 25);
+        addTrial(1, 3, 4, 4, 10, 25);
+        addTrial(3, 2, 5, 5, 10, 25);
+        addTrial(2, 1, 4, 4, 10, 20);
 
-                    // 0 = 0; 1 = 2; 2 = 4; 3 = 10; 4 = 12, 5 = 14; 6 = 20; 7 = 22; 8 = 24
-
-                    //Diagonal
-//                    trials.add(new Trial(i, j, position.get(i).get(0), position.get(j).get(24), trialNum++));
-//                    trials.add(new Trial(i, j, position.get(i).get(20), position.get(j).get(4), trialNum++));
-//                    trials.add(new Trial(i, j, position.get(i).get(4), position.get(j).get(20), trialNum++));
-//                    trials.add(new Trial(i, j, position.get(i).get(24), position.get(j).get(0), trialNum++));
-//                    trials.add(new Trial(i, j, position.get(i).get(12), position.get(j).get(24), trialNum++));
-//                    trials.add(new Trial(i, j, position.get(i).get(12), position.get(j).get(4), trialNum++));
-//                    trials.add(new Trial(i, j, position.get(i).get(12), position.get(j).get(0), trialNum++));
-//                    trials.add(new Trial(i, j, position.get(i).get(12), position.get(j).get(20), trialNum++));
-//                    trials.add(new Trial(i, j, position.get(i).get(20), position.get(j).get(12), trialNum++));
-//                    trials.add(new Trial(i, j, position.get(i).get(0), position.get(j).get(12), trialNum++));
-//                    trials.add(new Trial(i, j, position.get(i).get(4), position.get(j).get(12), trialNum++));
-//                    trials.add(new Trial(i, j, position.get(i).get(24), position.get(j).get(12), trialNum++));
-
-//                    trials.add(new Trial(i, j, position.get(i).get(1), position.get(j).get(3), trialNum++));
-//                    trials.add(new Trial(i, j, position.get(i).get(5), position.get(j).get(9), trialNum++));
-//                    trials.add(new Trial(i, j, position.get(i).get(15), position.get(j).get(19), trialNum++));
-//                    trials.add(new Trial(i, j, position.get(i).get(6), position.get(j).get(8), trialNum++));
-//                    trials.add(new Trial(i, j, position.get(i).get(16), position.get(j).get(18), trialNum++));
-
-                }
-            }
-        }
 
         for (int i = 0; i < Config.BLOCKS; i++) {
-            Collections.shuffle(trials);
+            //Collections.shuffle(trials);
+            ArrayList<Constellation> nextBlock = new ArrayList<>();
+            ArrayList<ArrayList<Constellation>> seperateTrials = new ArrayList<>();
+
+            // Get different startMonitors
+            ArrayList<Integer> maxStart = new ArrayList<>();
+            for(Constellation t : trials) {
+                if(!maxStart.contains(t.getMonitorStart())) {
+                    maxStart.add(t.getMonitorStart());
+                }
+            }
+
+            //Seperate different startMonitors in seperate Lists
+            for(int j = 1; j <= maxStart.size(); j++) {
+                int finalX = j;
+                ArrayList<Constellation> filteredTrials= trials.stream()
+                        .filter(n -> n.getMonitorStart() == finalX).collect(Collectors.toCollection(ArrayList::new));
+                Collections.shuffle(filteredTrials);
+                seperateTrials.add(filteredTrials);
+            }
+
+            //Stitch together new Block but keep order endMonitor = new StartMonitor
+            for(ArrayList<Constellation> constellations : seperateTrials) {
+                for(int x = 0; x < constellations.size(); x++) {
+                    nextBlock.add(constellations.get(x));
+                    boolean found = false;
+
+                    for(ArrayList<Constellation> constellations1 : seperateTrials) {
+                        for(Constellation constellation : constellations1) {
+                            if(constellation.getMonitorStart() == constellations.get(x).getMonitorEnd()) {
+                                nextBlock.add(constellation);
+                                constellations1.remove(constellation);
+                                found = true;
+                                break;
+                            }
+                        }
+                        if(found) break;
+                    }
+                    constellations.remove(constellations.get(x));
+                }
+            }
+            System.out.println("New Trialblock: ");
+            for(Constellation constellation : nextBlock) {
+                System.out.println(constellation.getMonitorStart() + " - " + constellation.getMonitorEnd() + ": " + constellation.getTrialNum());
+            }
             blocks.add(trials);
         }
 
         System.out.println("Trials: " + trials.size());
     }
 
-    public ArrayList<ArrayList<Trial>> getBlocks() {
+    public ArrayList<ArrayList<Constellation>> getBlocks() {
         return blocks;
     }
 
-    public void pushBackTrial(Trial trial) {
+    public void pushBackTrial(Constellation trial) {
         trials.add(trial);
     }
 
     public void resetTrialblock() {
-        Set<Trial> set = new HashSet<>(trials);
+        Set<Constellation> set = new HashSet<>(trials);
         trials.clear();
         trials.addAll(set);
     }

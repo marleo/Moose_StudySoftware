@@ -8,9 +8,8 @@ public class Config {
      * Logging
      */
     public static int USER_ID = 1;
-    public static int MAX_MONITOR = 2;
     public static int BLOCKS = 4;
-    public static int TESTNUM = 2;
+    public static int[] MONITOR_ZONES = {3, 3}; //Rows, Cols
     public static String LOG_PATH = "logs/";
     public static String MOUSE_LOG = "events_";
     public static String MOOSE_LOG = "moose_";
@@ -52,7 +51,5 @@ public class Config {
      * Goal-Circle
      */
     public static Color GOALCIRCLE_COLOR = new Color(208, 33, 33);
-    public static Color GOALCIRCLE_PRESSED_COLOR = new Color(118, 18, 18);
-    public static int GOALCIRCLE_RAD = 15; //Default value
-    public static int[] GOALCIRCLE_RADS = {15, 20, 25, 10}; //value per block
+    public static boolean GOAL_IS_CIRCLE = true;
 }
