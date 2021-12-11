@@ -36,7 +36,7 @@ public class ExperimentFrame extends JFrame {
             f.setLayout(new BorderLayout());
             f.setTitle("Monitor " + seq);
             f.setSize(600, 600);
-            f.setExtendedState(Frame.MAXIMIZED_BOTH); //Comment this out for 600 x 600 Windows instead of Fullscreen
+            //f.setExtendedState(Frame.MAXIMIZED_BOTH); //Comment this out for 600 x 600 Windows instead of Fullscreen
             f.setVisible(true);
             frames.add(f);
             trialblocks.addMonitor(f.getWidth(), f.getHeight(), f.getInsets().top);

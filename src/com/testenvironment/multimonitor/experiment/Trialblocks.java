@@ -3,6 +3,7 @@ package com.testenvironment.multimonitor.experiment;
 import com.testenvironment.multimonitor.Config;
 
 import java.awt.*;
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -83,7 +84,12 @@ public class Trialblocks {
      */
     public void generateTrials() {
         addTrial(2, 1, 0, 0, 10, 10);
-        addTrial(1, 2, 0, 0, 15, 15);
+        addTrial(1, 2, 1, 9, 15, 15);
+        addTrial(2, 1, 2, 4, 10, 10);
+        addTrial(1, 2, 6, 8, 15, 15);
+        addTrial(2, 1, 2, 7, 10, 10);
+        addTrial(1, 2, 1, 3, 15, 15);
+
 
 
         blocks.add(trials);
@@ -111,27 +117,18 @@ public class Trialblocks {
                 seperateTrials.add(filteredTrials);
             }
 
-            //Stitch together new Block but keep order endMonitor = new StartMonitor
-            for (ArrayList<Constellation> constellations : seperateTrials) {
+            Constellation nextConst = seperateTrials.get(0).get(0);
+            seperateTrials.get(0).remove(nextConst);
 
-                for (int x = 0; x < constellations.size(); x++) {
-                    nextBlock.add(constellations.get(x));
-                    boolean found = false;
-
-                    for (ArrayList<Constellation> constellations1 : seperateTrials) {
-                        for (Constellation constellation : constellations1) {
-                            if (constellation.getMonitorStart() == constellations.get(x).getMonitorEnd()) {
-                                nextBlock.add(constellation);
-                                constellations1.remove(constellation);
-                                found = true;
-                                break;
-                            }
-                        }
-                        if (found) break;
-                    }
-                    constellations.remove(constellations.get(x));
-                }
+            while(nextConst != null) {
+                nextBlock.add(nextConst);
+                nextConst = getNextConstellation(seperateTrials, nextConst.getMonitorEnd());
             }
+
+            for(ArrayList<Constellation> constellations : seperateTrials) {
+                nextBlock.addAll(constellations);
+            }
+
             /*
              * Debug: Prints Trialblocks with corresponding monitors & trialnumbers
              */
@@ -141,6 +138,21 @@ public class Trialblocks {
             }
             blocks.add(nextBlock);
         }
+    }
+
+    public Constellation getNextConstellation(ArrayList<ArrayList<Constellation>> constellations, int endMonitor) {
+        Constellation nextConst = null;
+
+        for(ArrayList<Constellation> constellation : constellations) {
+            for(Constellation c : constellation) {
+                if(c.getMonitorStart() == endMonitor) {
+                    nextConst = c;
+                    constellation.remove(c);
+                    break;
+                }
+            }
+        }
+        return nextConst;
     }
 
     public ArrayList<ArrayList<Constellation>> getBlocks() {
