@@ -3,7 +3,6 @@ package com.testenvironment.multimonitor.experiment;
 import com.testenvironment.multimonitor.Config;
 
 import java.awt.*;
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -90,8 +89,6 @@ public class Trialblocks {
         addTrial(2, 1, 2, 7, 10, 10);
         addTrial(1, 2, 1, 3, 15, 15);
 
-
-
         blocks.add(trials);
 
         for (int i = 1; i < Config.BLOCKS; i++) {
@@ -120,12 +117,12 @@ public class Trialblocks {
             Constellation nextConst = seperateTrials.get(0).get(0);
             seperateTrials.get(0).remove(nextConst);
 
-            while(nextConst != null) {
+            while (nextConst != null) {
                 nextBlock.add(nextConst);
                 nextConst = getNextConstellation(seperateTrials, nextConst.getMonitorEnd());
             }
 
-            for(ArrayList<Constellation> constellations : seperateTrials) {
+            for (ArrayList<Constellation> constellations : seperateTrials) {
                 nextBlock.addAll(constellations);
             }
 
@@ -143,9 +140,9 @@ public class Trialblocks {
     public Constellation getNextConstellation(ArrayList<ArrayList<Constellation>> constellations, int endMonitor) {
         Constellation nextConst = null;
 
-        for(ArrayList<Constellation> constellation : constellations) {
-            for(Constellation c : constellation) {
-                if(c.getMonitorStart() == endMonitor) {
+        for (ArrayList<Constellation> constellation : constellations) {
+            for (Constellation c : constellation) {
+                if (c.getMonitorStart() == endMonitor) {
                     nextConst = c;
                     constellation.remove(c);
                     break;
