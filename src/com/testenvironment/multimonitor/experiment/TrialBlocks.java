@@ -3,18 +3,19 @@ package com.testenvironment.multimonitor.experiment;
 import com.testenvironment.multimonitor.Config;
 
 import java.awt.*;
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Trialblocks {
-    private static Trialblocks instance = null;
+public class TrialBlocks {
+    private static TrialBlocks instance = null;
     private final Map<Integer, ArrayList<Point>> position;
     private final ArrayList<Constellation> trials;
     private final ArrayList<ArrayList<Constellation>> blocks;
     private int numMonitors;
     private int trialNum;
 
-    private Trialblocks() {
+    private TrialBlocks() {
         this.numMonitors = 0;
         this.position = new HashMap<>();
         this.trials = new ArrayList<>();
@@ -22,9 +23,9 @@ public class Trialblocks {
         this.trialNum = 0;
     }
 
-    public static Trialblocks getTrialblocks() {
+    public static TrialBlocks getTrialblocks() {
         if (instance == null) {
-            instance = new Trialblocks();
+            instance = new TrialBlocks();
         }
         return instance;
     }
@@ -184,18 +185,33 @@ public class Trialblocks {
     /**
      * Add errortrial back to trials.
      *
-     * @param trial - array to add trial to.
+     * @param trial - Constellation to push back
      */
-    public void pushBackTrial(Constellation trial) {
+    public void pushBackTrial(Constellation trial, int currentBlock) {
         trials.add(trial);
+        blocks.get(currentBlock - 1).add(trial);
     }
 
     /**
      * remove duplicates (errors duplicate the trials)
      */
     public void resetTrialblock() {
-        Set<Constellation> set = new HashSet<>(trials);
+        ArrayList<Constellation> removedErrors = new ArrayList<>();
+        for(int i = 0; i < trialNum; i++) {
+            removedErrors.add(trials.get(i));
+        }
         trials.clear();
-        trials.addAll(set);
+        trials.addAll(removedErrors);
+
+        for(ArrayList<Constellation> constellations : blocks) {
+            ArrayList<Constellation> remErrors = new ArrayList<>();
+
+            for(int i = 0; i < trialNum; i++) {
+                remErrors.add(constellations.get(i));
+            }
+
+            constellations.clear();
+            constellations.addAll(remErrors);
+        }
     }
 }

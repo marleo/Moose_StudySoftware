@@ -3,7 +3,7 @@ package com.testenvironment.multimonitor.gui;
 import com.testenvironment.multimonitor.Config;
 import com.testenvironment.multimonitor.experiment.Constellation;
 import com.testenvironment.multimonitor.experiment.Experiment;
-import com.testenvironment.multimonitor.experiment.Trialblocks;
+import com.testenvironment.multimonitor.experiment.TrialBlocks;
 import com.testenvironment.multimonitor.logging.Logger;
 import com.testenvironment.multimonitor.logging.MouseLogger;
 
@@ -27,7 +27,7 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
     private final MouseLogger mouseLogger;
     private final int blockNumber;
     private final int trialNumber;
-    private final Trialblocks trialblock;
+    private final TrialBlocks trialblock;
     private final Constellation currentTrial;
     private Color startColor;
 
@@ -40,7 +40,7 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
         this.addMouseMotionListener(this);
         this.logger = Logger.getLogger();
         this.mouseLogger = MouseLogger.getMouseLogger();
-        this.trialblock = Trialblocks.getTrialblocks();
+        this.trialblock = TrialBlocks.getTrialblocks();
         this.startColor = Config.STARTFIELD_COLOR;
         this.blockNumber = experiment.getBlock() + 1;
         this.trialNumber = experiment.getTrial() + 1;
@@ -174,7 +174,7 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
                 playError();
                 setTargetLogger(e, monitorName, dr);
                 this.currentTrial.setError();
-                trialblock.pushBackTrial(this.currentTrial);
+                trialblock.pushBackTrial(this.currentTrial, this.blockNumber);
                 experiment.drawFrames();
             }
         }

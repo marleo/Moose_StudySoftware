@@ -1,6 +1,6 @@
 package com.testenvironment.multimonitor.gui;
 
-import com.testenvironment.multimonitor.experiment.Trialblocks;
+import com.testenvironment.multimonitor.experiment.TrialBlocks;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +14,7 @@ public class ExperimentFrame extends JFrame {
 
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice[] gs = ge.getScreenDevices();
-        Trialblocks trialblocks = Trialblocks.getTrialblocks();
+        TrialBlocks trialblocks = TrialBlocks.getTrialblocks();
 
         /*
             Generate Frames

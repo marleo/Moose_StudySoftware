@@ -18,7 +18,7 @@ public class Experiment extends JPanel {
     private static ArrayList<JFrame> frames;
     private final Logger logger;
     private final MouseLogger mouseLogger;
-    private final Trialblocks trialblocks;
+    private final TrialBlocks trialblocks;
     private final ArrayList<ArrayList<Constellation>> blocks;
     private int currentTrialNum;
     private int currentTrialInSet;
@@ -28,7 +28,7 @@ public class Experiment extends JPanel {
     public Experiment() {
         this.logger = Logger.getLogger();
         this.mouseLogger = MouseLogger.getMouseLogger();
-        this.trialblocks = Trialblocks.getTrialblocks();
+        this.trialblocks = TrialBlocks.getTrialblocks();
         this.blocks = trialblocks.getBlocks();
         this.currentTrialNum = 0;
         this.currentBlock = 0;
