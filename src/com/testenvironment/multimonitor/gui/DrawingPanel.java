@@ -53,8 +53,9 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
     }
 
 
-    /*
-        Draw StartField and GoalCircle to frames
+    /**
+     * Draw drawables to correct frames
+     * @param g - Graphics object
      */
     @Override
     public void paintComponent(Graphics g) {
@@ -98,8 +99,9 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
         g2d.drawString("Block: " + blockNumber + " | Trial: " + trialNumber, Config.INFOTEXT_X, Config.INFOTEXT_Y);
     }
 
-    /*
-        Check if Mouseclick is in GoalCircle or StartField
+    /**
+     * Check if mouse was released inside goal / start
+     * @param e - mouseevent
      */
     @Override
     public void mouseReleased(MouseEvent e) {
@@ -142,6 +144,17 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
 
     }
 
+    /**
+     * Check if condition for finishing trial is met.
+     * @param e - mouseevent
+     * @param isInGoal - checks if its inside goal
+     * @param monitorName - monitor window name
+     * @param windowWidth - window width in px
+     * @param windowHeight - window height in px
+     * @param monitorWidth - monitor width in px
+     * @param monitorHeight - monitor height in px
+     * @param dr - goal drawable
+     */
     private void checkGoalConditions(MouseEvent e, boolean isInGoal, String monitorName, int windowWidth, int windowHeight, int monitorWidth, int monitorHeight, JComponent dr) {
         if (isInGoal) {
             if (testStart) {
@@ -216,6 +229,9 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
         // not needed
     }
 
+    /**
+     * Play success sound after trial completion
+     */
     private void playSuccess() {
         AudioInputStream successIn;
         Clip clip;
@@ -230,6 +246,9 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
         }
     }
 
+    /**
+     *  Play error sound after trial error
+     */
     private void playError() {
         AudioInputStream errorIn;
         Clip clip;

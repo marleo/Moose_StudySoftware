@@ -29,6 +29,13 @@ public class Trialblocks {
         return instance;
     }
 
+    /**
+     * Creates Zones for given Monitor and puts them into position Map
+     *
+     * @param monitorWidth - monitor width in px
+     * @param monitorHeight - monitor height in px
+     * @param insetSize - Size of Window insets
+     */
     public void addMonitor(int monitorWidth, int monitorHeight, int insetSize) {
         this.numMonitors++; //start with monitor 1
 
@@ -65,6 +72,16 @@ public class Trialblocks {
         position.put(numMonitors, xyCoords);
     }
 
+    /**
+     * Adds new Trial to the trial ArrayList
+     *
+     * @param monitorStart - startmonitor
+     * @param monitorGoal - endmonitor
+     * @param posStart - position in monitorzones (starting with 0 top left and going right)
+     * @param posGoal - goal position in monitorzones
+     * @param goalWidth - width of the goalcircle / -rectangle in px
+     * @param goalHeight - height of the goalcircle / -rectangle in px
+     */
     public void addTrial(int monitorStart, int monitorGoal, int posStart, int posGoal, int goalWidth, int goalHeight) {
 
         trials.add(new Constellation(
@@ -78,8 +95,9 @@ public class Trialblocks {
         ));
     }
 
-    /*
-        Add more Trials here
+    /**
+     * Here you can add more Trials.
+     * The trialorder for the following blocks gets generated below.
      */
     public void generateTrials() {
         addTrial(2, 1, 0, 0, 10, 10);
@@ -137,6 +155,13 @@ public class Trialblocks {
         }
     }
 
+    /**
+     * Tries to find a Constellation, where Startmonitor == previous Endmonitor.
+     * Otherwise returns null.
+     *
+     * @param constellations - Array containing constellations arrays splitted by startmonitor
+     * @param endMonitor - Previous Endmonitor
+     */
     public Constellation getNextConstellation(ArrayList<ArrayList<Constellation>> constellations, int endMonitor) {
         Constellation nextConst = null;
 
@@ -156,10 +181,18 @@ public class Trialblocks {
         return blocks;
     }
 
+    /**
+     * Add errortrial back to trials.
+     *
+     * @param trial - array to add trial to.
+     */
     public void pushBackTrial(Constellation trial) {
         trials.add(trial);
     }
 
+    /**
+     * remove duplicates (errors duplicate the trials)
+     */
     public void resetTrialblock() {
         Set<Constellation> set = new HashSet<>(trials);
         trials.clear();

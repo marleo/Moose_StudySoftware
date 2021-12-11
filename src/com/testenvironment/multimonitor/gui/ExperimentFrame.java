@@ -23,7 +23,6 @@ public class ExperimentFrame extends JFrame {
         for (GraphicsDevice gd : gs) {
             GraphicsConfiguration[] gc = gd.getConfigurations();
 
-
             JFrame f = new JFrame(gd.getDefaultConfiguration());
             Canvas c = new Canvas(gc[0]);
             Rectangle gcBounds = gc[0].getBounds();
