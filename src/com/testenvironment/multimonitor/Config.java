@@ -21,6 +21,7 @@ public class Config {
     public static Color START_BACKGROUNDCOLOR = new Color(230, 255, 230);
     public static Color GOAL_BACKGROUNDCOLOR = new Color(255, 230, 230);
     public static int PADDING = 15;
+    public static boolean FULLSCREEN = false;
 
     /**
      * Startbutton

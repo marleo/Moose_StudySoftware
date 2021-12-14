@@ -3,7 +3,6 @@ package com.testenvironment.multimonitor.experiment;
 import com.testenvironment.multimonitor.Config;
 
 import java.awt.*;
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.stream.Collectors;
 
