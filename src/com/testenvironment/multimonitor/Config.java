@@ -10,6 +10,7 @@ public class Config {
     public static int USER_ID = 1; //increments + 1 everytime the program gets opened
     public static int BLOCKS = 4; //Number of TrialBlocks
     public static int[] MONITOR_ZONES = {5, 5}; //Rows, Cols
+    public static boolean MONITOR_ORIENTATION = true; // true = horizontal; false = vertical
     public static String LOG_PATH = "logs/"; //Directory, where logs get stored (has to be created beforehand)
     public static String MOUSE_LOG = "events_";
     public static String MOOSE_LOG = "moose_";

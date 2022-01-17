@@ -165,7 +165,9 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
                 logger.setTargetWindowHeight(windowHeight);
                 logger.setTargetMonitorWidth(monitorWidth);
                 logger.setTargetMonitorHeight(monitorHeight);
-                logger.setErrors(this.currentTrial.getAndResetErrors());
+                logger.setErrors(0);
+                logger.setStartEndDistance();
+                logger.setStartEndDistanceMM();
                 logger.generateLogString();
                 experiment.drawFrames();
             }
@@ -175,6 +177,12 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
                 setTargetLogger(e, monitorName, dr);
                 this.currentTrial.setError();
                 trialblock.pushBackTrial(this.currentTrial, this.blockNumber);
+                logger.setTargetWindowWidth(windowWidth);
+                logger.setTargetWindowHeight(windowHeight);
+                logger.setTargetMonitorWidth(monitorWidth);
+                logger.setTargetMonitorHeight(monitorHeight);
+                logger.setErrors(1);
+                logger.generateLogString();
                 experiment.drawFrames();
             }
         }
@@ -187,6 +195,12 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
         /*
          * TODO: Log as well
          */
+
+        if(testStart) {
+            logger.setTargetPointPressedX(e.getX());
+            logger.setTargetPointPressedY(e.getY());
+        }
+
         setMouseLogger(e, currentFrame);
         mouseLogger.setMousePressed(1);
         mouseLogger.generateLogString();
@@ -275,15 +289,15 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
         logger.setStartPosY(dr.getY());
         logger.setStartCenterX(((StartField) dr).getCenterX());
         logger.setStartCenterY(((StartField) dr).getCenterY());
-        logger.setDistancePx(((StartField) dr).distanceToMid(e.getX(), e.getY()));
-        logger.setStartPointPressedX(e.getX());
-        logger.setStartPointPressedY(e.getY());
+        //logger.setDistancePx(((StartField) dr).distanceToMid(e.getX(), e.getY()));
+        logger.setStartPointReleasedX(e.getX());
+        logger.setStartPointReleasedY(e.getY());
         logger.setStartMonitor(Integer.parseInt(monitorName.replaceAll("[^0-9]", "")));
         logger.setBlockNumber(blockNumber);
         logger.setTrialNumberShown(trialNumber);
         logger.setTrialNumberInSet(experiment.getTrialNumberInSet());
         logger.setPixelSize(25.4 / screenRes);
-        logger.setDistanceMM(logger.getDistancePx() * logger.getPixelSize());
+        //logger.setDistanceMM(logger.getDistancePx() * logger.getPixelSize());
     }
 
     private void setTargetLogger(MouseEvent e, String monitorName, JComponent dr) {
@@ -296,8 +310,8 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
         logger.setTargetPosX(dr.getX());
         logger.setTargetPosY(dr.getY());
 
-        logger.setTargetPointPressedX(e.getX());
-        logger.setTargetPointPressedY(e.getY());
+        logger.setTargetPointReleasedX(e.getX());
+        logger.setTargetPointReleasedY(e.getY());
         logger.setTargetMonitor(Integer.parseInt(monitorName.replaceAll("[^0-9]", "")));
         logger.setBlockNumber(blockNumber);
         logger.setTrialNumberShown(trialNumber);
@@ -308,14 +322,14 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
 
         if (Config.GOAL_IS_CIRCLE) {
             logger.setTargetCenterX(((GoalCircle) dr).getCenterX());
-            logger.setTargetCenterY(((GoalCircle) dr).getCenterX());
-            logger.setDistancePx(((GoalCircle) dr).distanceToMid(e.getX(), e.getY()));
+            logger.setTargetCenterY(((GoalCircle) dr).getCenterY());
+            //logger.setDistancePx(((GoalCircle) dr).distanceToMid(e.getX(), e.getY()));
         } else {
             logger.setTargetCenterX(((GoalRect) dr).getCenterX());
-            logger.setTargetCenterY(((GoalRect) dr).getCenterX());
-            logger.setDistancePx(((GoalRect) dr).distanceToMid(e.getX(), e.getY()));
+            logger.setTargetCenterY(((GoalRect) dr).getCenterY());
+            //logger.setDistancePx(((GoalRect) dr).distanceToMid(e.getX(), e.getY()));
         }
-        logger.setDistanceMM(logger.getDistancePx() * logger.getPixelSize());
+        //logger.setDistanceMM(logger.getDistancePx() * logger.getPixelSize());
     }
 
     private void setMouseLogger(MouseEvent e, JFrame currentFrame) {

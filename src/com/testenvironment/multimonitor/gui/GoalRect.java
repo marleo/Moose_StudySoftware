@@ -62,4 +62,8 @@ public class GoalRect extends JComponent {
         return centerX;
     }
 
+    public int getCenterY() {
+        return centerY;
+    }
+
 }

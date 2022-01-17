@@ -1,6 +1,8 @@
 package com.testenvironment.multimonitor.logging;
 
 import com.testenvironment.multimonitor.Config;
+import com.testenvironment.multimonitor.experiment.Monitor;
+import com.testenvironment.multimonitor.experiment.TrialBlocks;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -9,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 
 /*
     TODO: Spalte mit Zeilenbeschriftung (rowCount); Spalte: isHit - 0/1; Jeder Release eine Spalte - back 2 the roots 
@@ -45,8 +48,10 @@ public class Logger {
     private int targetPosY;
     private int targetCenterX;
     private int targetCenterY;
-    private int startPointPressedX;
-    private int startPointPressedY;
+    private int startPointReleasedX;
+    private int startPointReleasedY;
+    private int targetPointReleasedX;
+    private int targetPointReleasedY;
     private int targetPointPressedX;
     private int targetPointPressedY;
     private int errors;
@@ -91,8 +96,10 @@ public class Logger {
         this.isTargetCircle = Config.GOAL_IS_CIRCLE;
         this.targetWidth = 0;
         this.targetHeight = 0;
-        this.startPointPressedX = 0;
-        this.startPointPressedY = 0;
+        this.startPointReleasedX = 0;
+        this.startPointReleasedY = 0;
+        this.targetPointReleasedX = 0;
+        this.targetPointReleasedY = 0;
         this.targetPointPressedX = 0;
         this.targetPointPressedY = 0;
         this.errors = 0;
@@ -126,8 +133,6 @@ public class Logger {
                 "blockNumber" + ";" +
                 "trialNumber" + ";" +
                 "trialNumberInSet" + ";" +
-                "distancePx" + ";" +
-                "distanceMM" + ";" +
                 "movementDirection" + ";" +
                 "testType" + ";" +
                 "startMonitor" + ";" +
@@ -135,6 +140,8 @@ public class Logger {
                 "startMonitorHeight" + ";" +
                 "startWindowWidth" + ";" +
                 "startWindowHeight" + ";" +
+                "distancePx" + ";" +
+                "distanceMM" + ";" +
                 "startPosX" + ";" +
                 "startPosY" + ";" +
                 "startCenterX" + ";" +
@@ -151,10 +158,12 @@ public class Logger {
                 "isTargetCircle" + ";" +
                 "targetWidth" + ";" +
                 "targetHeight" + ";" +
-                "startPointPressedX" + ";" +
-                "startPointPressedY" + ";" +
+                "startPointReleasedX" + ";" +
+                "startPointReleasedY" + ";" +
                 "targetPointPressedX" + ";" +
                 "targetPointPressedY" + ";" +
+                "targetPointReleasedX" + ";" +
+                "targetPointReleasedY" + ";" +
                 "errors" + ";" +
                 "trialStartTime" + ";" +
                 "trialEndTime" + ";" +
@@ -162,19 +171,10 @@ public class Logger {
     }
 
     public void generateLogString() {
-
-        if (this.targetMonitor > this.startMonitor) {
-            this.movementDirection = "Right";
-        } else {
-            this.movementDirection = "Left";
-        }
-
         String logString = participant + ";" +
                 blockNumber + ";" +
                 trialNumberShown + ";" +
                 trialNumberInSet + ";" +
-                distancePx + ";" +
-                distanceMM + ";" +
                 movementDirection + ";" +
                 testtype + ";" +
                 startMonitor + ";" +
@@ -182,6 +182,8 @@ public class Logger {
                 startMonitorHeight + ";" +
                 startWindowWidth + ";" +
                 startWindowHeight + ";" +
+                distancePx + ";" +
+                distanceMM + ";" +
                 startPosX + ";" +
                 startPosY + ";" +
                 startCenterX + ";" +
@@ -198,8 +200,10 @@ public class Logger {
                 isTargetCircle + ";" +
                 targetWidth + ";" +
                 targetHeight + ";" +
-                startPointPressedX + ";" +
-                startPointPressedY + ";" +
+                startPointReleasedX + ";" +
+                startPointReleasedY + ";" +
+                targetPointReleasedX + ";" +
+                targetPointReleasedY + ";" +
                 targetPointPressedX + ";" +
                 targetPointPressedY + ";" +
                 errors + ";" +
@@ -224,6 +228,93 @@ public class Logger {
     public void endLog() {
         System.out.println("Logging ended");
         logFile.close();
+    }
+
+    public void setStartEndDistance() {
+        boolean horizontal = Config.MONITOR_ORIENTATION;
+        int start = startMonitor;
+        int end = targetMonitor;
+        int startBtnX = startCenterX;
+        int endBtnX = targetCenterX;
+        int startBtnY = startCenterY;
+        int endBtnY = targetCenterY;
+        boolean edited = false;
+        ArrayList<Monitor> monitors = TrialBlocks.getTrialblocks().getMonitors();
+
+        if(horizontal) {
+            if(start > end) {
+                int temp = start;
+                start = end;
+                end = temp;
+
+                temp = startBtnX;
+                startBtnX = endBtnX;
+                endBtnX = temp;
+                this.movementDirection = "LEFT";
+                edited = true;
+            }
+            if(start < end) {
+                if(!edited) {
+                    this.movementDirection = "RIGHT";
+                }
+                int addX = 0;
+                ArrayList<Integer> monitorsBetween = new ArrayList<>();
+                if(start + 1 != end) {
+                    for(int i = start + 1; i < end; i++) {
+                        monitorsBetween.add(i);
+                    }
+                    for(int m : monitorsBetween) {
+                        addX += monitors.get(m).getMonitorWidth();
+                    }
+                }
+                int distX = monitors.get(start - 1).getMonitorWidth() - startBtnX + addX + endBtnX;
+
+                int distY = startBtnY - endBtnY;
+                setDistancePx(calculateEuclidianDistance(distX, distY));
+                setDistanceMM(calculateEuclidianDistance(distX, distY) * pixelSize);
+
+            }
+        } else { //vertical
+            if(end < start) {
+                int temp = start;
+                start = end;
+                end = temp;
+
+                temp = startBtnY;
+                startBtnY = endBtnY;
+                endBtnY = temp;
+
+                this.movementDirection = "UP";
+                edited = true;
+            }
+            if(start < end) {
+                if(!edited) {
+                    this.movementDirection = "DOWN";
+                }
+                int addY = 0;
+                ArrayList<Integer> monitorsBetween = new ArrayList<>();
+                if(start + 1 != end) {
+                    for(int i = start + 1; i < end; i++) {
+                        monitorsBetween.add(i);
+                    }
+                    for(int m : monitorsBetween) {
+                        addY += monitors.get(m).getMonitorHeight();
+                    }
+                }
+                int distY = monitors.get(start - 1).getMonitorHeight() - startBtnY + addY + endBtnY;
+                int distX = targetCenterX - startCenterX;
+                setDistancePx(calculateEuclidianDistance(distX, distY));
+                setDistanceMM(calculateEuclidianDistance(distX, distY) * pixelSize);
+            }
+        }
+    }
+
+    public void setStartEndDistanceMM() {
+        distanceMM = distancePx * pixelSize;
+    }
+
+    private int calculateEuclidianDistance(int x, int y) {
+        return (int) Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
     }
 
     public void setTargetWidth(int targetWidth) {
@@ -322,20 +413,20 @@ public class Logger {
         this.targetCenterY = targetCenterY;
     }
 
-    public void setStartPointPressedX(int startPointPressedX) {
-        this.startPointPressedX = startPointPressedX;
+    public void setStartPointReleasedX(int startPointReleasedX) {
+        this.startPointReleasedX = startPointReleasedX;
     }
 
-    public void setStartPointPressedY(int startPointPressedY) {
-        this.startPointPressedY = startPointPressedY;
+    public void setStartPointReleasedY(int startPointReleasedY) {
+        this.startPointReleasedY = startPointReleasedY;
     }
 
-    public void setTargetPointPressedX(int targetPointPressedX) {
-        this.targetPointPressedX = targetPointPressedX;
+    public void setTargetPointReleasedX(int targetPointReleasedX) {
+        this.targetPointReleasedX = targetPointReleasedX;
     }
 
-    public void setTargetPointPressedY(int targetPointPressedY) {
-        this.targetPointPressedY = targetPointPressedY;
+    public void setTargetPointReleasedY(int targetPointReleasedY) {
+        this.targetPointReleasedY = targetPointReleasedY;
     }
 
     public void setErrors(int errors) {
@@ -384,6 +475,14 @@ public class Logger {
 
     public void setTargetWindowHeight(int targetWindowHeight) {
         this.targetWindowHeight = targetWindowHeight;
+    }
+
+    public void setTargetPointPressedX(int targetPointPressedX) {
+        this.targetPointPressedX = targetPointPressedX;
+    }
+
+    public void setTargetPointPressedY(int targetPointPressedY) {
+        this.targetPointPressedY = targetPointPressedY;
     }
 
 

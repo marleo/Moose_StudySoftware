@@ -56,5 +56,7 @@ public class GoalCircle extends JComponent {
         return centerX;
     }
 
-
+    public int getCenterY() {
+        return centerY;
+    }
 }

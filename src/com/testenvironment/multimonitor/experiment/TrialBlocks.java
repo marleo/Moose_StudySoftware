@@ -11,6 +11,7 @@ public class TrialBlocks {
     private final Map<Integer, ArrayList<Point>> position;
     private final ArrayList<Constellation> trials;
     private final ArrayList<ArrayList<Constellation>> blocks;
+    private final ArrayList<Monitor> monitors;
     private int numMonitors;
     private int trialNum;
 
@@ -19,6 +20,7 @@ public class TrialBlocks {
         this.position = new HashMap<>();
         this.trials = new ArrayList<>();
         this.blocks = new ArrayList<>();
+        this.monitors = new ArrayList<>();
         this.trialNum = 0;
     }
 
@@ -37,6 +39,7 @@ public class TrialBlocks {
      * @param insetSize - Size of Window insets
      */
     public void addMonitor(int monitorWidth, int monitorHeight, int insetSize) {
+        monitors.add(new Monitor(monitorWidth, monitorHeight));
         this.numMonitors++; //start with monitor 1
 
         int monitorRows = Config.MONITOR_ZONES[0];
@@ -106,12 +109,11 @@ public class TrialBlocks {
      * The trialorder for the following blocks gets generated below.
      */
     public void generateTrials() {
-        addTrial(1, 2, 0, 4, 10, 10);
-        addTrial(2, 1, 5, 9, 10, 10);
+        addTrial(1, 2, 14, 10, 10, 10);
         addTrial(1, 2, 10, 14, 10, 10);
-        addTrial(2, 1, 15, 19, 10, 10);
-        addTrial(1, 2, 20, 24, 10, 10);
-        addTrial(2, 1, 12, 12, 10, 10);
+        addTrial(1, 2, 14, 10, 10, 10);
+        addTrial(2, 1, 14, 10, 10, 10);
+
 
         blocks.add(trials);
 
@@ -189,11 +191,10 @@ public class TrialBlocks {
 
     /**
      * Add errortrial back to trials.
-     * TODO: **************** ADDS TOO MANY TRIALS ON ERROR *******************
      * @param trial - Constellation to push back
      */
     public void pushBackTrial(Constellation trial, int currentBlock) {
-        trials.add(trial);
+        //trials.add(trial);
         blocks.get(currentBlock - 1).add(trial);
     }
 
@@ -218,5 +219,9 @@ public class TrialBlocks {
             constellations.clear();
             constellations.addAll(remErrors);
         }
+    }
+
+    public ArrayList<Monitor> getMonitors() {
+        return monitors;
     }
 }

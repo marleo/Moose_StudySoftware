@@ -33,6 +33,10 @@ public class Constellation {
         this.errors++;
     }
 
+    public int getErrors() {
+        return this.errors;
+    }
+
     public int getAndResetErrors() {
         int returnVal = this.errors;
         this.errors = 0;
