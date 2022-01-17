@@ -184,6 +184,9 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
     public void mousePressed(MouseEvent e) {
         JFrame currentFrame = (JFrame) SwingUtilities.getRoot(this);
 
+        /*
+         * TODO: Log as well
+         */
         setMouseLogger(e, currentFrame);
         mouseLogger.setMousePressed(1);
         mouseLogger.generateLogString();
@@ -300,7 +303,6 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
         logger.setTrialNumberShown(trialNumber);
         logger.setTrialNumberInSet(experiment.getTrialNumberInSet());
         logger.setPixelSize(25.4 / screenRes);
-        logger.setDistanceMM(logger.getDistancePx() * logger.getPixelSize());
         logger.setTargetHeight(currentTrial.getGoalHeight());
         logger.setTargetWidth(currentTrial.getGoalWidth());
 
@@ -313,6 +315,7 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
             logger.setTargetCenterY(((GoalRect) dr).getCenterX());
             logger.setDistancePx(((GoalRect) dr).distanceToMid(e.getX(), e.getY()));
         }
+        logger.setDistanceMM(logger.getDistancePx() * logger.getPixelSize());
     }
 
     private void setMouseLogger(MouseEvent e, JFrame currentFrame) {

@@ -12,7 +12,6 @@ public class ExperimentFrame extends JFrame {
     private final ArrayList<JFrame> frames = new ArrayList<>();
 
     public ExperimentFrame() {
-
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice[] gs = ge.getScreenDevices();
         TrialBlocks trialblocks = TrialBlocks.getTrialblocks();
@@ -38,6 +37,7 @@ public class ExperimentFrame extends JFrame {
             f.setSize(600, 600);
             if(Config.FULLSCREEN) {
                 f.setExtendedState(Frame.MAXIMIZED_BOTH); //Comment this out for 600 x 600 Windows instead of Fullscreen
+                //f.setUndecorated(true);
             }
             f.setVisible(true);
             frames.add(f);

@@ -1,2 +1,5 @@
 This file exists, so that Github keeps the folder (/logs).
 Just ignore it!
+
+
+Distanz zw. Start & Ziel:

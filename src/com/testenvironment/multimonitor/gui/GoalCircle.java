@@ -40,8 +40,6 @@ public class GoalCircle extends JComponent {
     /*
         Getter's & Setter's
      */
-
-
     public int getDiam() {
         return diam;
     }

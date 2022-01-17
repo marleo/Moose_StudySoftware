@@ -73,17 +73,33 @@ public class Experiment extends JPanel {
 
         int xRect, yRect, xCirc, yCirc;
 
-        if (currentTrialNum % 2 == 0) {
-            xRect = (int) this.blocks.get(currentBlock).get(currentTrialNum).getEnd().getX();
-            yRect = (int) this.blocks.get(currentBlock).get(currentTrialNum).getEnd().getY();
-            xCirc = (int) this.blocks.get(currentBlock).get(currentTrialNum).getStart().getX();
-            yCirc = (int) this.blocks.get(currentBlock).get(currentTrialNum).getStart().getY();
-        } else {
-            xRect = (int) this.blocks.get(currentBlock).get(currentTrialNum).getStart().getX();
-            yRect = (int) this.blocks.get(currentBlock).get(currentTrialNum).getStart().getY();
-            xCirc = (int) this.blocks.get(currentBlock).get(currentTrialNum).getEnd().getX();
-            yCirc = (int) this.blocks.get(currentBlock).get(currentTrialNum).getEnd().getY();
-        }
+//        if (currentTrialNum % 2 != 0) {
+//            xRect = (int) this.blocks.get(currentBlock).get(currentTrialNum).getEnd().getX();
+//            yRect = (int) this.blocks.get(currentBlock).get(currentTrialNum).getEnd().getY();
+//            xCirc = (int) this.blocks.get(currentBlock).get(currentTrialNum).getStart().getX();
+//            yCirc = (int) this.blocks.get(currentBlock).get(currentTrialNum).getStart().getY();
+//            System.out.println("xStart: " + xRect + "\n" +
+//                    "yStart: " + yRect + "\n" +
+//                    "xGoal: " + xCirc + "\n" +
+//                    "yGoal: " + yCirc + "\n"
+//            );
+//        } else {
+//            xRect = (int) this.blocks.get(currentBlock).get(currentTrialNum).getStart().getX();
+//            yRect = (int) this.blocks.get(currentBlock).get(currentTrialNum).getStart().getY();
+//            xCirc = (int) this.blocks.get(currentBlock).get(currentTrialNum).getEnd().getX();
+//            yCirc = (int) this.blocks.get(currentBlock).get(currentTrialNum).getEnd().getY();
+//
+//            System.out.println("xRect: " + xRect + "\n" +
+//                    "yRect: " + yRect + "\n" +
+//                    "xCirc: " + xCirc + "\n" +
+//                    "yCirc: " + yCirc + "\n"
+//            );
+//        }
+
+        xRect = (int) this.blocks.get(currentBlock).get(currentTrialNum).getStart().getX();
+        yRect = (int) this.blocks.get(currentBlock).get(currentTrialNum).getStart().getY();
+        xCirc = (int) this.blocks.get(currentBlock).get(currentTrialNum).getEnd().getX();
+        yCirc = (int) this.blocks.get(currentBlock).get(currentTrialNum).getEnd().getY();
 
         //Add Startfield
         StartField startField = new StartField(xRect, yRect, Config.STARTFIELD_WIDTH, Config.STARTFIELD_HEIGHT);

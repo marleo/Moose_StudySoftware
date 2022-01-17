@@ -52,20 +52,26 @@ public class TrialBlocks {
         int topEdge = rectHeight + insetSize + padding;
         int bottomEdge = monitorHeight - rectHeight / 2 - insetSize - padding;
 
-        int xCoord = leftEdge;
-        int yCoord = topEdge;
+        int xCoord = leftEdge + ((rightEdge - leftEdge) / (monitorCols)) / 2;
+        int xCoord_cpy = xCoord;
+        int yCoord = topEdge + ((bottomEdge - topEdge) / (monitorRows)) / 2;
+
+        int xStep = (rightEdge - leftEdge) / (monitorCols);
+        int yStep = (bottomEdge - topEdge) / (monitorRows);
 
         xyCoords.add(new Point(xCoord, yCoord));
 
         for (int i = 1; i < monitorRows; i++) {
             for (int j = 1; j < monitorCols; j++) {
-                int xStep = (rightEdge - leftEdge) / (monitorCols - 1);
                 xCoord += xStep;
                 xyCoords.add(new Point(xCoord, yCoord));
             }
-            int yStep = (bottomEdge - topEdge) / (monitorRows - 1);
             yCoord += yStep;
-            xCoord = leftEdge;
+            xCoord = xCoord_cpy;
+            xyCoords.add(new Point(xCoord, yCoord));
+        }
+        for (int j = 1; j < monitorCols; j++) {
+            xCoord += xStep;
             xyCoords.add(new Point(xCoord, yCoord));
         }
 
@@ -100,12 +106,12 @@ public class TrialBlocks {
      * The trialorder for the following blocks gets generated below.
      */
     public void generateTrials() {
-        addTrial(2, 1, 0, 0, 10, 10);
-        addTrial(1, 2, 1, 9, 15, 15);
-        addTrial(2, 1, 2, 4, 10, 10);
-        addTrial(1, 2, 6, 8, 15, 15);
-        addTrial(2, 1, 2, 7, 10, 10);
-        addTrial(1, 2, 1, 3, 15, 15);
+        addTrial(1, 2, 0, 4, 10, 10);
+        addTrial(2, 1, 5, 9, 10, 10);
+        addTrial(1, 2, 10, 14, 10, 10);
+        addTrial(2, 1, 15, 19, 10, 10);
+        addTrial(1, 2, 20, 24, 10, 10);
+        addTrial(2, 1, 12, 12, 10, 10);
 
         blocks.add(trials);
 
@@ -183,7 +189,7 @@ public class TrialBlocks {
 
     /**
      * Add errortrial back to trials.
-     *
+     * TODO: **************** ADDS TOO MANY TRIALS ON ERROR *******************
      * @param trial - Constellation to push back
      */
     public void pushBackTrial(Constellation trial, int currentBlock) {

@@ -10,12 +10,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
+/*
+    TODO: Spalte mit Zeilenbeschriftung (rowCount); Spalte: isHit - 0/1; Jeder Release eine Spalte - back 2 the roots 
+    TODO: Spalte Error (fortlaufend pro Error) 
+ */
+
 public class Logger {
 
     private static Logger instance = null;
     private PrintWriter logFile;
-    private String testtype;
-    private boolean headerWritten;
+    private final String testtype;
 
     private int participant;
     private int blockNumber;
@@ -51,7 +55,7 @@ public class Logger {
     private long trialTime;
     private double pixelSize;
     private double distanceMM;
-    private boolean isTargetCircle;
+    private final boolean isTargetCircle;
     private int targetWidth;
     private int targetHeight;
 
@@ -246,24 +250,12 @@ public class Logger {
         this.trialNumberInSet = trialNumberInSet;
     }
 
-    public String getTesttype() {
-        return testtype;
-    }
-
-    public void setTesttype(String testtype) {
-        this.testtype = testtype;
-    }
-
     public int getParticipant() {
         return participant;
     }
 
     public void setParticipant(int participant) {
         this.participant = participant;
-    }
-
-    public int getTrialNumberShown() {
-        return trialNumberShown;
     }
 
     public void setTrialNumberShown(int trialNumberShown) {
@@ -286,216 +278,108 @@ public class Logger {
         this.distancePx = distancePx;
     }
 
-    public String getMovementDirection() {
-        return movementDirection;
-    }
-
     public void setMovementDirection(String movementDirection) {
         this.movementDirection = movementDirection;
-    }
-
-    public int getStartMonitor() {
-        return startMonitor;
     }
 
     public void setStartMonitor(int startMonitor) {
         this.startMonitor = startMonitor;
     }
 
-    public int getStartPosX() {
-        return startPosX;
-    }
-
     public void setStartPosX(int startPosX) {
         this.startPosX = startPosX;
-    }
-
-    public int getStartPosY() {
-        return startPosY;
     }
 
     public void setStartPosY(int startPosY) {
         this.startPosY = startPosY;
     }
 
-    public int getStartCenterX() {
-        return startCenterX;
-    }
-
     public void setStartCenterX(int startCenterX) {
         this.startCenterX = startCenterX;
-    }
-
-    public int getStartCenterY() {
-        return startCenterY;
     }
 
     public void setStartCenterY(int startCenterY) {
         this.startCenterY = startCenterY;
     }
 
-    public int getTargetMonitor() {
-        return targetMonitor;
-    }
-
     public void setTargetMonitor(int targetMonitor) {
         this.targetMonitor = targetMonitor;
-    }
-
-    public int getTargetPosX() {
-        return targetPosX;
     }
 
     public void setTargetPosX(int targetPosX) {
         this.targetPosX = targetPosX;
     }
 
-    public int getTargetPosY() {
-        return targetPosY;
-    }
-
     public void setTargetPosY(int targetPosY) {
         this.targetPosY = targetPosY;
-    }
-
-    public int getTargetCenterX() {
-        return targetCenterX;
     }
 
     public void setTargetCenterX(int targetCenterX) {
         this.targetCenterX = targetCenterX;
     }
 
-    public int getTargetCenterY() {
-        return targetCenterY;
-    }
-
     public void setTargetCenterY(int targetCenterY) {
         this.targetCenterY = targetCenterY;
-    }
-
-    public int getStartPointPressedX() {
-        return startPointPressedX;
     }
 
     public void setStartPointPressedX(int startPointPressedX) {
         this.startPointPressedX = startPointPressedX;
     }
 
-    public int getStartPointPressedY() {
-        return startPointPressedY;
-    }
-
     public void setStartPointPressedY(int startPointPressedY) {
         this.startPointPressedY = startPointPressedY;
-    }
-
-    public int getTargetPointPressedX() {
-        return targetPointPressedX;
     }
 
     public void setTargetPointPressedX(int targetPointPressedX) {
         this.targetPointPressedX = targetPointPressedX;
     }
 
-    public int getTargetPointPressedY() {
-        return targetPointPressedY;
-    }
-
     public void setTargetPointPressedY(int targetPointPressedY) {
         this.targetPointPressedY = targetPointPressedY;
-    }
-
-    public int isHit() {
-        return errors;
     }
 
     public void setErrors(int errors) {
         this.errors = errors;
     }
 
-    public long getTrialStartTime() {
-        return trialStartTime;
-    }
-
     public void setTrialStartTime(long trialStartTime) {
         this.trialStartTime = trialStartTime;
-    }
-
-    public long getTrialEndTime() {
-        return trialEndTime;
     }
 
     public void setTrialEndTime(long trialEndTime) {
         this.trialEndTime = trialEndTime;
     }
 
-    public long getTrialTime() {
-        return trialTime;
-    }
-
     public void setTrialTime(long trialTime) {
         this.trialTime = trialTime;
-    }
-
-    public int getStartMonitorWidth() {
-        return startMonitorWidth;
     }
 
     public void setStartMonitorWidth(int startMonitorWidth) {
         this.startMonitorWidth = startMonitorWidth;
     }
 
-    public int getStartMonitorHeight() {
-        return startMonitorHeight;
-    }
-
     public void setStartMonitorHeight(int startMonitorHeight) {
         this.startMonitorHeight = startMonitorHeight;
-    }
-
-    public int getTargetMonitorWidth() {
-        return targetMonitorWidth;
     }
 
     public void setTargetMonitorWidth(int targetMonitorWidth) {
         this.targetMonitorWidth = targetMonitorWidth;
     }
 
-    public int getTargetMonitorHeight() {
-        return targetMonitorHeight;
-    }
-
     public void setTargetMonitorHeight(int targetMonitorHeight) {
         this.targetMonitorHeight = targetMonitorHeight;
-    }
-
-    public int getStartWindowWidth() {
-        return startWindowWidth;
     }
 
     public void setStartWindowWidth(int startWindowWidth) {
         this.startWindowWidth = startWindowWidth;
     }
 
-    public int getStartWindowHeight() {
-        return startWindowHeight;
-    }
-
     public void setStartWindowHeight(int startWindowHeight) {
         this.startWindowHeight = startWindowHeight;
     }
 
-    public int getTargetWindowWidth() {
-        return targetWindowWidth;
-    }
-
     public void setTargetWindowWidth(int targetWindowWidth) {
         this.targetWindowWidth = targetWindowWidth;
-    }
-
-    public int getTargetWindowHeight() {
-        return targetWindowHeight;
     }
 
     public void setTargetWindowHeight(int targetWindowHeight) {
