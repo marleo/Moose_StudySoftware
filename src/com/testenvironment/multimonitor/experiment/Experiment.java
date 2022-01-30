@@ -4,6 +4,7 @@ import com.testenvironment.multimonitor.Config;
 import com.testenvironment.multimonitor.gui.*;
 import com.testenvironment.multimonitor.logging.Logger;
 import com.testenvironment.multimonitor.logging.MouseLogger;
+import com.testenvironment.multimonitor.moose.Server;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -38,6 +39,9 @@ public class Experiment extends JPanel {
     }
 
     public static void main(String[] args) {
+        if(Config.TESTTYPE.equals("MOOSE")) {
+            Server.get().start();
+        }
         ExperimentFrame experimentFrame = new ExperimentFrame();
         frames = experimentFrame.getStartFrames();
         new Experiment();

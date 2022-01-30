@@ -14,7 +14,7 @@ public class Config {
     public static String LOG_PATH = "logs/"; //Directory, where logs get stored (has to be created beforehand)
     public static String MOUSE_LOG = "events_";
     public static String MOOSE_LOG = "moose_";
-    public static String TESTTYPE = "NO_MOOSE";
+    public static String TESTTYPE = "MOOSE";
 
     /**
      * Testpanel
@@ -22,7 +22,7 @@ public class Config {
     public static Color START_BACKGROUNDCOLOR = new Color(230, 255, 230);
     public static Color GOAL_BACKGROUNDCOLOR = new Color(255, 230, 230);
     public static int PADDING = 15;
-    public static boolean FULLSCREEN = true;
+    public static boolean FULLSCREEN = false;
 
     /**
      * Startbutton
