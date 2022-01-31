@@ -1,5 +1,6 @@
 package com.testenvironment.multimonitor.moose;
 
+import java.awt.*;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -82,13 +83,16 @@ public class Server {
                         Memo memo = Memo.valueOf(message);
 
                         // If it was scrolling, send to Controller to perform
-                        if (memo.getAction().equals("SCROLL")) System.out.println(memo);
+                        if (memo.getAction().equals("SCROLL")) {
+                            System.out.println(memo);
+                            Robot.getRobot().moveRobot(memo.getMode());
+                        }
 
                     } else {
                         start();
                         return;
                     }
-                } catch (IOException e) {
+                } catch (IOException | AWTException e) {
                     System.out.println("Error in reading from Moose");
                     e.printStackTrace();
                 }
