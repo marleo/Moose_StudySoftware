@@ -1,6 +1,10 @@
 package com.testenvironment.multimonitor.moose;
 
+import com.testenvironment.multimonitor.experiment.Monitor;
+import com.testenvironment.multimonitor.experiment.TrialBlocks;
+
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Robot {
@@ -34,7 +38,7 @@ public class Robot {
                     }
                 }
                 if (nextScreen != null) {
-                    fixedMouseMoveHorizontal(currentScreen, nextScreen, prevScreenWidths);
+                    fixedMouseMoveHorizontal(nextScreen, prevScreenWidths);
                 }
             }
             case "swipeLeft" -> {
@@ -47,7 +51,7 @@ public class Robot {
                     }
                 }
                 if (nextScreen != null) {
-                    fixedMouseMoveHorizontal(currentScreen, nextScreen, prevScreenWidths);
+                    fixedMouseMoveHorizontal(nextScreen, prevScreenWidths);
                 }
             }
             case "swipeUp" -> {
@@ -59,7 +63,7 @@ public class Robot {
                         prevScreenHeights += g.getDisplayMode().getHeight();
                     }
                     if (nextScreen != null) {
-                        fixedMouseMoveVertical(currentScreen, nextScreen, prevScreenHeights);
+                        fixedMouseMoveVertical(nextScreen, prevScreenHeights);
                     }
                 }
             }
@@ -72,14 +76,14 @@ public class Robot {
                         prevScreenHeights += g.getDisplayMode().getHeight();
                     }
                     if (nextScreen != null) {
-                        fixedMouseMoveVertical(currentScreen, nextScreen, prevScreenHeights);
+                        fixedMouseMoveVertical(nextScreen, prevScreenHeights);
                     }
                 }
             }
         }
     }
 
-    private void fixedMouseMoveVertical(GraphicsDevice currentScreen, GraphicsDevice nextScreen, int prevScreenHeights) throws AWTException {
+    private void fixedMouseMoveVertical(GraphicsDevice nextScreen, int prevScreenHeights) throws AWTException {
         java.awt.Robot robot = new java.awt.Robot(nextScreen);
 
         int width = nextScreen.getDisplayMode().getWidth();
@@ -87,7 +91,6 @@ public class Robot {
 
         int x = width/2;
         int y = -prevScreenHeights + height/2;
-        System.out.println("__ Y : " + y);
 
         for(int count = 0;(MouseInfo.getPointerInfo().getLocation().getX() != x || //First move it to the correct screen
                 MouseInfo.getPointerInfo().getLocation().getY() != y) &&
@@ -99,14 +102,23 @@ public class Robot {
         fixCurrentMonitorRes(robot, x, y); //Adjust for current Monitors Width
     }
 
-    private void fixedMouseMoveHorizontal(GraphicsDevice currentScreen, GraphicsDevice nextScreen, int prevScreenWidths) throws AWTException {
+    private void fixedMouseMoveHorizontal(GraphicsDevice nextScreen, int prevScreenWidths) throws AWTException {
         java.awt.Robot robot = new java.awt.Robot(nextScreen);
 
         int width = nextScreen.getDisplayMode().getWidth();
         int height = nextScreen.getDisplayMode().getHeight();
 
+        int maxHeight = 0;
+        ArrayList<Monitor> monitors = TrialBlocks.getTrialblocks().getMonitors();
+
+        for(Monitor m : monitors) { //Find monitor with max height
+            if(m.getMonitorHeight() < maxHeight) {
+                maxHeight = m.getMonitorHeight();
+            }
+        }
+
         int x = prevScreenWidths + width/2;
-        int y = height/2 + Math.abs(currentScreen.getDisplayMode().getHeight() - nextScreen.getDisplayMode().getHeight());
+        int y = height/2 + Math.abs(maxHeight - nextScreen.getDisplayMode().getHeight());
 
         for(int count = 0;(MouseInfo.getPointerInfo().getLocation().getX() != x || //First move it to the correct screen
                 MouseInfo.getPointerInfo().getLocation().getY() != y) &&
@@ -118,7 +130,7 @@ public class Robot {
         fixCurrentMonitorRes(robot, x, y); //Adjust for current Monitors Height
     }
 
-    private void fixCurrentMonitorRes(java.awt.Robot robot, int x, int y) {
+    private void fixCurrentMonitorRes(java.awt.Robot robot, int x, int y) { //Workaround because AWTRobot is broken ATM
         for(int count = 0;(MouseInfo.getPointerInfo().getLocation().getX() != x ||
                 MouseInfo.getPointerInfo().getLocation().getY() != y) &&
                 count < 100; count++) {
