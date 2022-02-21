@@ -13,11 +13,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 
-/*
-    TODO: Spalte mit Zeilenbeschriftung (rowCount); Spalte: isHit - 0/1; Jeder Release eine Spalte - back 2 the roots 
-    TODO: Spalte Error (fortlaufend pro Error) 
- */
-
 public class Logger {
 
     private static Logger instance = null;
@@ -54,6 +49,10 @@ public class Logger {
     private int targetPointReleasedY;
     private int targetPointPressedX;
     private int targetPointPressedY;
+    private int rightSwipes;
+    private int leftSwipes;
+    private int upSwipes;
+    private int downSwipes;
     private int errors;
     private long trialStartTime;
     private long trialEndTime;
@@ -102,6 +101,10 @@ public class Logger {
         this.targetPointReleasedY = 0;
         this.targetPointPressedX = 0;
         this.targetPointPressedY = 0;
+        this.leftSwipes = 0;
+        this.rightSwipes = 0;
+        this.upSwipes = 0;
+        this.downSwipes = 0;
         this.errors = 0;
         this.trialStartTime = 0;
         this.trialEndTime = 0;
@@ -164,6 +167,10 @@ public class Logger {
                 "targetPointPressedY" + ";" +
                 "targetPointReleasedX" + ";" +
                 "targetPointReleasedY" + ";" +
+                "leftSwipes" + ";" +
+                "rightSwipes" + ";" +
+                "upSwipes" + ";" +
+                "downSwipes" + ";" +
                 "errors" + ";" +
                 "trialStartTime" + ";" +
                 "trialEndTime" + ";" +
@@ -206,6 +213,10 @@ public class Logger {
                 targetPointReleasedY + ";" +
                 targetPointPressedX + ";" +
                 targetPointPressedY + ";" +
+                leftSwipes + ";" +
+                rightSwipes + ";" +
+                upSwipes + ";" +
+                downSwipes + ";" +
                 errors + ";" +
                 trialStartTime + ";" +
                 trialEndTime + ";" +
@@ -315,6 +326,38 @@ public class Logger {
 
     private int calculateEuclidianDistance(int x, int y) {
         return (int) Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+    }
+
+    public void incRightSwipe() {
+       this.rightSwipes++;
+    }
+
+    public void incLeftSwipe() {
+        this.leftSwipes++;
+    }
+
+    public void incUpSwipes() {
+        this.upSwipes++;
+    }
+
+    public void incDownSwipes() {
+        this.downSwipes++;
+    }
+
+    public void resetRightSwipes() {
+        this.rightSwipes = 0;
+    }
+
+    public void resetLeftSwipes() {
+        this.leftSwipes = 0;
+    }
+
+    public void resetUpSwipes() {
+        this.upSwipes = 0;
+    }
+
+    public void resetDownSwipes() {
+        this.downSwipes = 0;
     }
 
     public void setTargetWidth(int targetWidth) {

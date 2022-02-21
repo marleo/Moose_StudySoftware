@@ -140,6 +140,11 @@ public class Experiment extends JPanel {
         endFrame.getContentPane().add(canvasSecond);
         endFrame.setVisible(true);
 
+        logger.resetDownSwipes();
+        logger.resetLeftSwipes();
+        logger.resetRightSwipes();
+        logger.resetUpSwipes();
+
         currentTrialNum++;
     }
 

@@ -3,6 +3,7 @@ package com.testenvironment.multimonitor.moose;
 import com.testenvironment.multimonitor.Config;
 import com.testenvironment.multimonitor.experiment.Monitor;
 import com.testenvironment.multimonitor.experiment.TrialBlocks;
+import com.testenvironment.multimonitor.logging.Logger;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,6 +13,7 @@ import java.util.Collections;
 
 public class Robot {
     private static Robot instance = null;
+    private Logger logger = Logger.getLogger();
 
     public static Robot getRobot() {
         if(instance == null) {
@@ -31,6 +33,7 @@ public class Robot {
 
         switch (swipeDirection) {
             case "swipeRight" -> {
+                logger.incRightSwipe();
                 if (currentScreenIndex + 1 < gs.length) {
                     nextScreen = gs[currentScreenIndex + 1];
                     for (GraphicsDevice g : gs) {
@@ -42,9 +45,11 @@ public class Robot {
                 if (nextScreen != null) {
                     fixedMouseMoveHorizontal(nextScreen, prevScreenWidths);
                     drawCustomMouse();
+                    incrementSwipeCount();
                 }
             }
             case "swipeLeft" -> {
+                logger.incLeftSwipe();
                 if (currentScreenIndex - 1 >= 0) {
                     nextScreen = gs[currentScreenIndex - 1];
                     for (GraphicsDevice g : gs) {
@@ -56,9 +61,11 @@ public class Robot {
                 if (nextScreen != null) {
                     fixedMouseMoveHorizontal(nextScreen, prevScreenWidths);
                     drawCustomMouse();
+                    incrementSwipeCount();
                 }
             }
             case "swipeUp" -> {
+                logger.incUpSwipes();
                 if (currentScreenIndex + 1 < gs.length) {
                     nextScreen = gs[currentScreenIndex + 1];
                     for (GraphicsDevice g : gs) {
@@ -69,10 +76,12 @@ public class Robot {
                     if (nextScreen != null) {
                         fixedMouseMoveVertical(nextScreen, prevScreenHeights);
                         drawCustomMouse();
+                        incrementSwipeCount();
                     }
                 }
             }
             case "swipeDown" -> {
+                logger.incDownSwipes();
                 if (currentScreenIndex - 1 >= 0) {
                     nextScreen = gs[currentScreenIndex - 1];
                     for (GraphicsDevice g : gs) {
@@ -83,6 +92,7 @@ public class Robot {
                     if (nextScreen != null) {
                         fixedMouseMoveVertical(nextScreen, prevScreenHeights);
                         drawCustomMouse();
+                        incrementSwipeCount();
                     }
                 }
             }
@@ -149,6 +159,9 @@ public class Robot {
         System.out.println("X: " + currentPosX + " | Y: " + currentPosY);
     }
 
+    /**
+     *  Has to run on its own thread to avoid clicks not detecting while animating
+     */
     private void drawCustomMouse() {
         Toolkit toolkit = Toolkit.getDefaultToolkit();
         ArrayList<Image> cursorImg = new ArrayList<>();
@@ -181,5 +194,9 @@ public class Robot {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void incrementSwipeCount() {
+        TrialBlocks trialBlocks = TrialBlocks.getTrialblocks();
     }
 }
