@@ -7,6 +7,7 @@ import com.testenvironment.multimonitor.logging.Logger;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.InputEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -95,6 +96,11 @@ public class Robot {
                         incrementSwipeCount();
                     }
                 }
+            }
+            case "tap" -> {
+                java.awt.Robot robot = new java.awt.Robot();
+                robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+                robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
             }
         }
     }
