@@ -22,7 +22,15 @@ public class Config {
     public static Color START_BACKGROUNDCOLOR = new Color(230, 255, 230);
     public static Color GOAL_BACKGROUNDCOLOR = new Color(255, 230, 230);
     public static int PADDING = 15;
-    public static boolean FULLSCREEN = false;
+    public static boolean FULLSCREEN = true;
+    public static int CURSOR_ANIM_LENGTH = 250; //in ms
+    public static String[] CURSOR_FILEPATHS = {
+            "assets/8x8.png",
+            "assets/12x12.png",
+            "assets/16x16.png",
+            "assets/24x24.png",
+            "assets/32x32.png"
+    };
 
     /**
      * Startbutton

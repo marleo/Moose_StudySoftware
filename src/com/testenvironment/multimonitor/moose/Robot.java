@@ -1,11 +1,14 @@
 package com.testenvironment.multimonitor.moose;
 
+import com.testenvironment.multimonitor.Config;
 import com.testenvironment.multimonitor.experiment.Monitor;
 import com.testenvironment.multimonitor.experiment.TrialBlocks;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 public class Robot {
     private static Robot instance = null;
@@ -22,7 +25,6 @@ public class Robot {
         GraphicsDevice[] gs = ge.getScreenDevices();
 
         int currentScreenIndex = Arrays.asList(gs).indexOf(MouseInfo.getPointerInfo().getDevice());
-        GraphicsDevice currentScreen = gs[currentScreenIndex];
         GraphicsDevice nextScreen = null;
         int prevScreenWidths = 0;
         int prevScreenHeights = 0;
@@ -39,6 +41,7 @@ public class Robot {
                 }
                 if (nextScreen != null) {
                     fixedMouseMoveHorizontal(nextScreen, prevScreenWidths);
+                    drawCustomMouse();
                 }
             }
             case "swipeLeft" -> {
@@ -52,6 +55,7 @@ public class Robot {
                 }
                 if (nextScreen != null) {
                     fixedMouseMoveHorizontal(nextScreen, prevScreenWidths);
+                    drawCustomMouse();
                 }
             }
             case "swipeUp" -> {
@@ -64,6 +68,7 @@ public class Robot {
                     }
                     if (nextScreen != null) {
                         fixedMouseMoveVertical(nextScreen, prevScreenHeights);
+                        drawCustomMouse();
                     }
                 }
             }
@@ -77,6 +82,7 @@ public class Robot {
                     }
                     if (nextScreen != null) {
                         fixedMouseMoveVertical(nextScreen, prevScreenHeights);
+                        drawCustomMouse();
                     }
                 }
             }
@@ -141,5 +147,39 @@ public class Robot {
         int currentPosY = MouseInfo.getPointerInfo().getLocation().y;
 
         System.out.println("X: " + currentPosX + " | Y: " + currentPosY);
+    }
+
+    private void drawCustomMouse() {
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+        ArrayList<Image> cursorImg = new ArrayList<>();
+
+        for(String path : Config.CURSOR_FILEPATHS) {
+            cursorImg.add(toolkit.getImage(path));
+        }
+
+        SwingUtilities.invokeLater(() -> {
+            changeCursor(cursorImg);
+            Collections.reverse(cursorImg);
+            changeCursor(cursorImg);
+
+            for(Frame frame : Frame.getFrames()) {
+                frame.setCursor(Cursor.getDefaultCursor());
+            }
+        });
+    }
+
+    private void changeCursor(ArrayList<Image> cursorImg) {
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+        for(Image img : cursorImg) {
+            Cursor cursor = toolkit.createCustomCursor(img, new Point(16, 16), "pulse");
+            for(Frame frame : Frame.getFrames()) {
+                frame.setCursor(cursor);
+            }
+            try {
+                Thread.sleep(Config.CURSOR_ANIM_LENGTH / cursorImg.size());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
