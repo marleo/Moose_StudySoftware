@@ -134,7 +134,7 @@ public class Robot {
         ArrayList<Monitor> monitors = TrialBlocks.getTrialblocks().getMonitors();
 
         for(Monitor m : monitors) { //Find monitor with max height
-            if(m.getMonitorHeight() < maxHeight) {
+            if(m.getMonitorHeight() > maxHeight) {
                 maxHeight = m.getMonitorHeight();
             }
         }
@@ -142,12 +142,14 @@ public class Robot {
         int x = prevScreenWidths + width/2;
         int y = height/2 + Math.abs(maxHeight - nextScreen.getDisplayMode().getHeight());
 
+        robot.mouseMove(x, maxHeight);
+
         for(int count = 0;(MouseInfo.getPointerInfo().getLocation().getX() != x || //First move it to the correct screen
                 MouseInfo.getPointerInfo().getLocation().getY() != y) &&
                 count < 100; count++) {
             robot.mouseMove(x, y);
         }
-        y = MouseInfo.getPointerInfo().getDevice().getDisplayMode().getHeight() / 2; //Then put y to mid of that monitor
+        //y = MouseInfo.getPointerInfo().getDevice().getDisplayMode().getHeight() / 2; //Then put y to mid of that monitor
 
         fixCurrentMonitorRes(robot, x, y); //Adjust for current Monitors Height
     }
