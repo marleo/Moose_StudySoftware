@@ -44,7 +44,6 @@ public class ExperimentFrame extends JFrame {
             }
             f.setVisible(true);
             frames.add(f);
-            trialblocks.addMonitor(f.getWidth(), f.getHeight(), f.getInsets().top);
             seq++;
         }
         trialblocks.generateTrials();

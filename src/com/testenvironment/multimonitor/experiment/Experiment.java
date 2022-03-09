@@ -11,7 +11,6 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -34,7 +33,6 @@ public class Experiment extends JPanel {
         this.blocks = trialblocks.getBlocks();
         this.currentTrialNum = 0;
         this.currentBlock = 0;
-
         drawFrames();
     }
 
@@ -48,104 +46,103 @@ public class Experiment extends JPanel {
     }
 
     public void drawFrames() {
-        if (currentTrialNum >= blocks.get(currentBlock).size()) {
-            currentBlock++;
-            currentTrialNum = 0;
-            trialblocks.resetTrialblock();
-            playFinished();
+        if(currentTrialNum >= blocks.get(currentBlock).size()) {
+            if((currentBlock + 1) % Config.PAUSE_AFTER_BLOCKNR == 0 && !trialblocks.isResumeTrial()) {
+                System.out.println("True");
+                trialblocks.setPauseTrial(true);
+            }
         }
+        if(!trialblocks.isPauseTrial()) {
+            trialblocks.setResumeTrial(false);
+            if (currentTrialNum >= blocks.get(currentBlock).size()) {
+                currentBlock++;
+                currentTrialNum = 0;
+                trialblocks.resetTrialblock();
+                playFinished();
+            }
 
-        if (currentBlock >= blocks.size() || currentBlock == Config.BLOCKS) {
-            logger.endLog();
-            mouseLogger.endLog();
-            System.exit(0);
-        }
+            if (currentBlock >= blocks.size() || currentBlock == Config.BLOCKS) {
+                logger.endLog();
+                mouseLogger.endLog();
+                System.exit(0);
+            }
 
-        for (JFrame fr : frames) {
-            fr.getContentPane().removeAll();
-            fr.repaint();
-        }
+            for (JFrame fr : frames) {
+                fr.getContentPane().removeAll();
+                fr.repaint();
+            }
 
-        int numStartFrame = blocks.get(currentBlock).get(currentTrialNum).getMonitorStart() - 1;
-        int numGoalFrame = blocks.get(currentBlock).get(currentTrialNum).getMonitorEnd() - 1;
+            int numStartFrame = blocks.get(currentBlock).get(currentTrialNum).getMonitorStart() - 1;
+            int numGoalFrame = blocks.get(currentBlock).get(currentTrialNum).getMonitorEnd() - 1;
 
-        JFrame startFrame = frames.get(numStartFrame);
-        JFrame endFrame = frames.get(numGoalFrame);
+            JFrame startFrame = frames.get(numStartFrame);
+            JFrame endFrame = frames.get(numGoalFrame);
 
-        ArrayList<JComponent> drawables = new ArrayList<>();
+            ArrayList<JComponent> drawables = new ArrayList<>();
 
-        this.currentTrialInSet = this.blocks.get(currentBlock).get(currentTrialNum).getTrialNum();
+            this.currentTrialInSet = this.blocks.get(currentBlock).get(currentTrialNum).getTrialNum();
 
-        int xRect, yRect, xCirc, yCirc;
+            int xRect, yRect, xCirc, yCirc;
 
-//        if (currentTrialNum % 2 != 0) {
-//            xRect = (int) this.blocks.get(currentBlock).get(currentTrialNum).getEnd().getX();
-//            yRect = (int) this.blocks.get(currentBlock).get(currentTrialNum).getEnd().getY();
-//            xCirc = (int) this.blocks.get(currentBlock).get(currentTrialNum).getStart().getX();
-//            yCirc = (int) this.blocks.get(currentBlock).get(currentTrialNum).getStart().getY();
-//            System.out.println("xStart: " + xRect + "\n" +
-//                    "yStart: " + yRect + "\n" +
-//                    "xGoal: " + xCirc + "\n" +
-//                    "yGoal: " + yCirc + "\n"
-//            );
-//        } else {
-//            xRect = (int) this.blocks.get(currentBlock).get(currentTrialNum).getStart().getX();
-//            yRect = (int) this.blocks.get(currentBlock).get(currentTrialNum).getStart().getY();
-//            xCirc = (int) this.blocks.get(currentBlock).get(currentTrialNum).getEnd().getX();
-//            yCirc = (int) this.blocks.get(currentBlock).get(currentTrialNum).getEnd().getY();
-//
-//            System.out.println("xRect: " + xRect + "\n" +
-//                    "yRect: " + yRect + "\n" +
-//                    "xCirc: " + xCirc + "\n" +
-//                    "yCirc: " + yCirc + "\n"
-//            );
-//        }
+            xRect = (int) this.blocks.get(currentBlock).get(currentTrialNum).getStart().getX();
+            yRect = (int) this.blocks.get(currentBlock).get(currentTrialNum).getStart().getY();
+            xCirc = (int) this.blocks.get(currentBlock).get(currentTrialNum).getEnd().getX();
+            yCirc = (int) this.blocks.get(currentBlock).get(currentTrialNum).getEnd().getY();
 
-        xRect = (int) this.blocks.get(currentBlock).get(currentTrialNum).getStart().getX();
-        yRect = (int) this.blocks.get(currentBlock).get(currentTrialNum).getStart().getY();
-        xCirc = (int) this.blocks.get(currentBlock).get(currentTrialNum).getEnd().getX();
-        yCirc = (int) this.blocks.get(currentBlock).get(currentTrialNum).getEnd().getY();
+            //Add Startfield
+            StartField startField = new StartField(xRect, yRect, Config.STARTFIELD_WIDTH, Config.STARTFIELD_HEIGHT);
+            startField.setLocation(new Point(startField.getTlX(), startField.getTlY()));
+            drawables.add(startField);
 
-        //Add Startfield
-        StartField startField = new StartField(xRect, yRect, Config.STARTFIELD_WIDTH, Config.STARTFIELD_HEIGHT);
-        startField.setLocation(new Point(startField.getTlX(), startField.getTlY()));
-        drawables.add(startField);
+            DrawingPanel canvas = new DrawingPanel(this, drawables);
 
-        DrawingPanel canvas = new DrawingPanel(this, drawables);
+            canvas.setBounds(0, 0, startFrame.getWidth(), startFrame.getHeight());
+            startFrame.getContentPane().add(canvas);
+            startFrame.setVisible(true);
 
-        canvas.setBounds(0, 0, startFrame.getWidth(), startFrame.getHeight());
-        startFrame.getContentPane().add(canvas);
-        startFrame.setVisible(true);
+            drawables = new ArrayList<>();
 
-        drawables = new ArrayList<>();
+            //Add GoalCircle
+            GoalCircle goalCircle;
+            GoalRect goalRect;
+            Constellation constellation = this.blocks.get(currentBlock).get(currentTrialNum);
 
-        //Add GoalCircle
-        GoalCircle goalCircle;
-        GoalRect goalRect;
-        Constellation constellation = this.blocks.get(currentBlock).get(currentTrialNum);
+            if (Config.GOAL_IS_CIRCLE) {
+                goalCircle = new GoalCircle(xCirc, yCirc, constellation.getGoalWidth());
+                goalCircle.setLocation(new Point(goalCircle.getTlX(), goalCircle.getTlY()));
+                drawables.add(goalCircle);
+            } else {
+                goalRect = new GoalRect(xCirc, yCirc, constellation.getGoalWidth(), constellation.getGoalHeight());
+                goalRect.setLocation(new Point(goalRect.getTlX(), goalRect.getTlY()));
+                drawables.add(goalRect);
+            }
 
-        if (Config.GOAL_IS_CIRCLE) {
-            goalCircle = new GoalCircle(xCirc, yCirc, constellation.getGoalWidth());
-            goalCircle.setLocation(new Point(goalCircle.getTlX(), goalCircle.getTlY()));
-            drawables.add(goalCircle);
+            DrawingPanel canvasSecond = new DrawingPanel(this, drawables);
+
+            canvasSecond.setBounds(0, 0, endFrame.getWidth(), endFrame.getHeight());
+            endFrame.getContentPane().add(canvasSecond);
+            endFrame.setVisible(true);
+
+            logger.resetDownSwipes();
+            logger.resetLeftSwipes();
+            logger.resetRightSwipes();
+            logger.resetUpSwipes();
+
+            currentTrialNum++;
         } else {
-            goalRect = new GoalRect(xCirc, yCirc, constellation.getGoalWidth(), constellation.getGoalHeight());
-            goalRect.setLocation(new Point(goalRect.getTlX(), goalRect.getTlY()));
-            drawables.add(goalRect);
+            for(JFrame fr : frames) {
+
+                fr.getContentPane().removeAll();
+                fr.repaint();
+
+                System.out.println("Here");
+                PauseFrame pauseFrame = new PauseFrame(this);
+                pauseFrame.setBounds(0, 0, fr.getWidth(), fr.getHeight());
+                fr.getContentPane().add(pauseFrame);
+                fr.setVisible(true);
+            }
         }
 
-        DrawingPanel canvasSecond = new DrawingPanel(this, drawables);
-
-        canvasSecond.setBounds(0, 0, endFrame.getWidth(), endFrame.getHeight());
-        endFrame.getContentPane().add(canvasSecond);
-        endFrame.setVisible(true);
-
-        logger.resetDownSwipes();
-        logger.resetLeftSwipes();
-        logger.resetRightSwipes();
-        logger.resetUpSwipes();
-
-        currentTrialNum++;
     }
 
     private void playFinished() {
