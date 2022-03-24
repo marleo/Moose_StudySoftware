@@ -225,9 +225,7 @@ public class TrialBlocks {
 
             startMonitor++;
 
-            int debug = 0;
             while (nextConst != null) {
-                debug++;
                 nextBlock.add(nextConst);
                 constIndex++;
                 nextConst = getNextConstellation(seperateTrials, nextConst.getMonitorEnd(), constIndex);
