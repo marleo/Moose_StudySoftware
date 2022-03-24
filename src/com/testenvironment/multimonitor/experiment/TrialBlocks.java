@@ -114,91 +114,117 @@ public class TrialBlocks {
      */
     public void generateTrials() {
         if(!Config.RECIPROCAL) {
-            addTrial(1, 2, 0, 0, 10, 10);
-            addTrial(2, 1, 0, 0, 10, 10);
+            addTrial(1, 3, 5, 12, 10, 10);
+            addTrial(3, 1, 24, 14, 10, 10);
+            addTrial(1, 2, 24, 14, 10, 10);
+            addTrial(2, 1, 24, 14, 10, 10);
+            addTrial(1, 3, 24, 14, 10, 10);
+            addTrial(3, 2, 24, 14, 10, 10);
+            addTrial(2, 3, 24, 14, 10, 10);
+            addTrial(3, 1, 24, 14, 10, 10);
 
             blocks.add(trials);
 
-            for (int i = 1; i < Config.BLOCKS; i++) {
-                //Collections.shuffle(trials);
-                ArrayList<Constellation> nextBlock = new ArrayList<>();
-                ArrayList<ArrayList<Constellation>> seperateTrials = new ArrayList<>();
+            generateBlocks();
 
-                // Get different startMonitors
-                ArrayList<Integer> maxStart = new ArrayList<>();
-                for (Constellation t : trials) {
-                    if (!maxStart.contains(t.getMonitorStart())) {
-                        maxStart.add(t.getMonitorStart());
-                    }
-                }
-
-                //Seperate different startMonitors in seperate Lists
-                for (int j = 1; j <= numMonitors; j++) {
-                    int finalX = j;
-                    ArrayList<Constellation> filteredTrials = trials.stream()
-                            .filter(n -> n.getMonitorStart() == finalX)
-                            .collect(Collectors.toCollection(ArrayList::new));
-                    Collections.shuffle(filteredTrials);
-                    seperateTrials.add(filteredTrials);
-                }
-
-                Constellation nextConst = seperateTrials.get(0).get(0);
-                seperateTrials.get(0).remove(nextConst);
-
-                while (nextConst != null) {
-                    nextBlock.add(nextConst);
-                    nextConst = getNextConstellation(seperateTrials, nextConst.getMonitorEnd());
-                }
-
-                for (ArrayList<Constellation> constellations : seperateTrials) {
-                    nextBlock.addAll(constellations);
-                }
-
-                /*
-                 * Debug: Prints Trialblocks with corresponding monitors & trialnumbers
-                 */
-                System.out.println("Trialblock " + (i + 1) + ":");
-                for (Constellation constellation : nextBlock) {
-                    System.out.println(constellation.getMonitorStart() + " - " + constellation.getMonitorEnd() + ": " + constellation.getTrialNum());
-                }
-                blocks.add(nextBlock);
-            }
         } else {
-            addTrial(2,3,5,5,10,10);
-            addTrial(3,2,5,5,10,10);
-            addTrial(2,3,5,5,10,10);
-            addTrial(3,2,5,5,10,10);
-            addTrial(2,3,5,5,10,10);
-            addTrial(3,2,5,5,10,10);
-            addTrial(2,3,5,5,10,10);
-            addTrial(3,2,5,5,10,10);
-            addTrial(2,3,5,5,10,10);
-            addTrial(3,2,5,5,10,10);
-            addTrial(2,3,5,5,10,10);
-            addTrial(3,2,5,5,10,10);
+            addReciproceTrials();
+        }
+    }
 
-            blocks.add(trials);
-            trials.clear();
+    /**
+     * Adds a set of predefined Reciproce Trials
+     *
+     */
+    private void addReciproceTrials() {
+        addTrial(2,3,2,7,10,10);
+        addTrial(3,2,1,4,10,10);
+        addTrial(2,3,8,6,10,10);
+        addTrial(3,2,8,3,10,10);
+        addTrial(2,3,1,8,10,10);
+        addTrial(3,2,5,7,10,10);
+        addTrial(2,3,12,10,10,10);
+        addTrial(3,2,5,16,10,10);
+        addTrial(2,3,15,20,10,10);
+        addTrial(3,2,17,19,10,10);
+        addTrial(2,3,11,16,10,10);
+        addTrial(3,2,10,18,10,10);
 
-            addTrial(1,3,5,5,10,10);
-            addTrial(3,1,5,5,10,10);
-            addTrial(1,3,5,5,10,10);
-            addTrial(3,1,5,5,10,10);
-            addTrial(1,3,5,5,10,10);
-            addTrial(3,1,5,5,10,10);
-            addTrial(1,3,5,5,10,10);
-            addTrial(3,1,5,5,10,10);
-            addTrial(1,3,5,5,10,10);
-            addTrial(3,1,5,5,10,10);
-            addTrial(1,3,5,5,10,10);
-            addTrial(3,1,5,5,10,10);
+        ArrayList<Constellation> trialCopy = new ArrayList<>(trials);
+        blocks.add(trialCopy);
 
-            blocks.add(trials);
+        Collections.reverse(trials);
 
-            Collections.reverse(trials);
+        trialCopy = new ArrayList<>(trials);
+        blocks.add(trialCopy);
+        trials.clear();
 
-            blocks.add(trials);
-            trials.clear();
+        addTrial(1,3,2,15,10,10);
+        addTrial(3,1,1,7,10,10);
+        addTrial(1,3,3,5,10,10);
+        addTrial(3,1,2,16,10,10);
+        addTrial(1,3,8,12,10,10);
+        addTrial(3,1,12,10,10,10);
+        addTrial(1,3,14,15,10,10);
+        addTrial(3,1,17,3,10,10);
+        addTrial(1,3,4,22,10,10);
+        addTrial(3,1,16,13,10,10);
+        addTrial(1,3,20,24,10,10);
+        addTrial(3,1,22,1,10,10);
+
+        trialCopy = new ArrayList<>(trials);
+        blocks.add(trialCopy);
+
+        Collections.reverse(trials);
+
+        trialCopy = new ArrayList<>(trials);
+        blocks.add(trialCopy);
+        trials.clear();
+    }
+
+    private void generateBlocks() {
+        for (int i = 1; i < Config.BLOCKS; i++) {
+            ArrayList<Constellation> nextBlock = new ArrayList<>();
+            ArrayList<ArrayList<Constellation>> seperateTrials = new ArrayList<>();
+
+            // Get different startMonitors
+            ArrayList<Integer> maxStart = new ArrayList<>();
+            for (Constellation t : trials) {
+                if (!maxStart.contains(t.getMonitorStart())) {
+                    maxStart.add(t.getMonitorStart());
+                }
+            }
+
+            //Seperate different startMonitors in seperate Lists
+            for (int j = 1; j <= numMonitors; j++) {
+                int finalX = j;
+                ArrayList<Constellation> filteredTrials = trials.stream()
+                        .filter(n -> n.getMonitorStart() == finalX)
+                        .collect(Collectors.toCollection(ArrayList::new));
+                Collections.shuffle(filteredTrials);
+                seperateTrials.add(filteredTrials);
+            }
+
+            Constellation nextConst = seperateTrials.get(0).get(0);
+            seperateTrials.get(0).remove(nextConst);
+
+            while (nextConst != null) {
+                nextBlock.add(nextConst);
+                nextConst = getNextConstellation(seperateTrials, nextConst.getMonitorEnd());
+            }
+
+            for (ArrayList<Constellation> constellations : seperateTrials) {
+                nextBlock.addAll(constellations);
+            }
+
+            /*
+             * Debug: Prints Trialblocks with corresponding monitors & trialnumbers
+             */
+            System.out.println("Trialblock " + (i + 1) + ":");
+            for (Constellation constellation : nextBlock) {
+                System.out.println(constellation.getMonitorStart() + " - " + constellation.getMonitorEnd() + ": " + constellation.getTrialNum());
+            }
+            blocks.add(nextBlock);
         }
     }
 
@@ -235,6 +261,9 @@ public class TrialBlocks {
     public void pushBackTrial(Constellation trial, int currentBlock) {
         //trials.add(trial);
         blocks.get(currentBlock - 1).add(trial);
+
+        //rearrange trials
+
     }
 
     /**

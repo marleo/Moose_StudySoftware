@@ -48,7 +48,6 @@ public class Experiment extends JPanel {
     public void drawFrames() {
         if(currentTrialNum >= blocks.get(currentBlock).size()) {
             if((currentBlock + 1) % Config.PAUSE_AFTER_BLOCKNR == 0 && !trialblocks.isResumeTrial()) {
-                System.out.println("True");
                 trialblocks.setPauseTrial(true);
             }
         }
@@ -57,7 +56,8 @@ public class Experiment extends JPanel {
             if (currentTrialNum >= blocks.get(currentBlock).size()) {
                 currentBlock++;
                 currentTrialNum = 0;
-                trialblocks.resetTrialblock();
+                if(!Config.RECIPROCAL)
+                    trialblocks.resetTrialblock();
                 playFinished();
             }
 
@@ -135,7 +135,6 @@ public class Experiment extends JPanel {
                 fr.getContentPane().removeAll();
                 fr.repaint();
 
-                System.out.println("Here");
                 PauseFrame pauseFrame = new PauseFrame(this);
                 pauseFrame.setBounds(0, 0, fr.getWidth(), fr.getHeight());
                 fr.getContentPane().add(pauseFrame);

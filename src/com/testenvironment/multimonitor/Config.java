@@ -8,9 +8,9 @@ public class Config {
      * Logging
      */
     public static int USER_ID = 1; //increments + 1 everytime the program gets opened
-    public static int BLOCKS = 12; //Number of TrialBlocks
+    public static int BLOCKS = 15; //Number of TrialBlocks | IF 0, generates all possible combinations for the given trials
     public static int PAUSE_AFTER_BLOCKNR = 3;
-    public static int[] MONITOR_ZONES = {1, 1}; //Rows, Cols
+    public static int[] MONITOR_ZONES = {5, 5}; //Rows, Cols
     public static boolean MONITOR_ORIENTATION = true; // true = horizontal; false = vertical
     public static String LOG_PATH = "logs/"; //Directory, where logs get stored (has to be created beforehand)
     public static String MOUSE_LOG = "events_";
@@ -52,8 +52,6 @@ public class Config {
     public static int INFOTEXT_Y = 30;
     public static Color INFOTEXT_COLOR = Color.BLACK;
     public static int INFOTEXT_FONT_SIZE = 18;
-    public static int PAUSETEXT_X = 20;
-    public static int PAUSETEXT_Y = 30;
     public static Color PAUSETEXT_COLOR = Color.white;
     public static int PAUSETEXT_FONT_SIZE = 22;
     public static String PAUSETEXT = "Trial paused, press anywhere to continue";
