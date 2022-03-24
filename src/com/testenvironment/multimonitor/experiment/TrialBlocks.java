@@ -183,6 +183,9 @@ public class TrialBlocks {
     }
 
     private void generateBlocks() {
+        int startMonitor = 1;
+        int startTrial = 0;
+
         for (int i = 1; i < Config.BLOCKS; i++) {
             ArrayList<Constellation> nextBlock = new ArrayList<>();
             ArrayList<ArrayList<Constellation>> seperateTrials = new ArrayList<>();
@@ -205,12 +208,29 @@ public class TrialBlocks {
                 seperateTrials.add(filteredTrials);
             }
 
-            Constellation nextConst = seperateTrials.get(0).get(0);
-            seperateTrials.get(0).remove(nextConst);
+            int constIndex = 0;
 
+            if(startMonitor > numMonitors) {
+                startMonitor = 1;
+                startTrial++;
+            }
+
+            Constellation nextConst;
+            if(startTrial >= seperateTrials.get(startMonitor - 1).size()) {
+                nextConst = seperateTrials.get(startMonitor - 1).get(seperateTrials.get(startMonitor - 1).size() - 1);
+            } else {
+                nextConst = seperateTrials.get(startMonitor - 1).get(startTrial);
+            }
+            seperateTrials.get(startMonitor - 1).remove(nextConst);
+
+            startMonitor++;
+
+            int debug = 0;
             while (nextConst != null) {
+                debug++;
                 nextBlock.add(nextConst);
-                nextConst = getNextConstellation(seperateTrials, nextConst.getMonitorEnd());
+                constIndex++;
+                nextConst = getNextConstellation(seperateTrials, nextConst.getMonitorEnd(), constIndex);
             }
 
             for (ArrayList<Constellation> constellations : seperateTrials) {
@@ -235,19 +255,27 @@ public class TrialBlocks {
      * @param constellations - Array containing constellations arrays splitted by startmonitor
      * @param endMonitor - Previous Endmonitor
      */
-    public Constellation getNextConstellation(ArrayList<ArrayList<Constellation>> constellations, int endMonitor) {
+    public Constellation getNextConstellation(ArrayList<ArrayList<Constellation>> constellations, int endMonitor, int constIndex) {
         Constellation nextConst = null;
 
         for (ArrayList<Constellation> constellation : constellations) {
             for (Constellation c : constellation) {
                 if (c.getMonitorStart() == endMonitor) {
                     nextConst = c;
-                    constellation.remove(c);
-                    break;
+                    for (ArrayList<Constellation> block : blocks) {
+                        if (!(block.get(constIndex - 1) == nextConst)) {
+                            constellation.remove(c);
+                            return nextConst;
+                        }
+                    }
                 }
             }
+            if(nextConst != null) {
+                constellation.remove(nextConst);
+                return nextConst;
+            }
         }
-        return nextConst;
+        return null;
     }
 
     public ArrayList<ArrayList<Constellation>> getBlocks() {
@@ -260,10 +288,30 @@ public class TrialBlocks {
      */
     public void pushBackTrial(Constellation trial, int currentBlock) {
         //trials.add(trial);
-        blocks.get(currentBlock - 1).add(trial);
+        System.out.println("-------");
+        System.out.println("Failed at trial " + trial.getTrialNum());
 
-        //rearrange trials
+        Constellation trialToSwitch = null;
 
+        StringBuilder oldOrder = new StringBuilder();
+        for(Constellation c : blocks.get(currentBlock - 1)) {
+            oldOrder.append(" ").append(c.getTrialNum());
+            if(c.getMonitorStart() == trial.getMonitorStart() && c.getMonitorEnd() == trial.getMonitorEnd()) {
+                trialToSwitch = c;
+                int indexToSwitch = blocks.get(currentBlock - 1).indexOf(c);
+                blocks.get(currentBlock - 1).set(indexToSwitch, trial);
+            }
+        }
+        System.out.println("Old Order: " + oldOrder);
+
+        blocks.get(currentBlock - 1).add(Objects.requireNonNullElse(trialToSwitch, trial));
+
+        StringBuilder newOrder = new StringBuilder();
+        for(Constellation c : blocks.get(currentBlock - 1)) {
+            newOrder.append(" ").append(c.getTrialNum());
+        }
+        System.out.println("New Order: " + newOrder);
+        System.out.println("-------");
     }
 
     /**
