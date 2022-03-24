@@ -183,7 +183,7 @@ public class TrialBlocks {
     }
 
     private void generateBlocks() {
-        int startMonitor = 1;
+        int startMonitor = 2;
         int startTrial = 0;
 
         for (int i = 1; i < Config.BLOCKS; i++) {
@@ -235,14 +235,18 @@ public class TrialBlocks {
                 nextBlock.addAll(constellations);
             }
 
-            /*
-             * Debug: Prints Trialblocks with corresponding monitors & trialnumbers
-             */
-            System.out.println("Trialblock " + (i + 1) + ":");
-            for (Constellation constellation : nextBlock) {
-                System.out.println(constellation.getMonitorStart() + " - " + constellation.getMonitorEnd() + ": " + constellation.getTrialNum());
-            }
             blocks.add(nextBlock);
+        }
+        //Sort blocks
+        blocks.sort(Comparator.comparingInt(o -> o.get(0).getMonitorStart()));
+
+        //TODO: delete Debug
+        for(int i = 0; i < blocks.size(); i++) {
+            System.out.println("Blocknr.: " + i);
+            for(Constellation c : blocks.get(i)) {
+                System.out.println(c.getMonitorStart() + " - " + c.getMonitorEnd() + " | Trialnumber:" + c.getTrialNum());
+            }
+            System.out.println();
         }
     }
 
