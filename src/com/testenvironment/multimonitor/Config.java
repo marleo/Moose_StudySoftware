@@ -9,7 +9,7 @@ public class Config {
      */
     public static int USER_ID = 1; //increments + 1 everytime the program gets opened
     public static int BLOCKS = 15; //Number of TrialBlocks | IF 0, generates all possible combinations for the given trials
-    public static int PAUSE_AFTER_BLOCKNR = 3;
+    public static int PAUSE_AFTER_BLOCKNR = 2;
     public static int[] MONITOR_ZONES = {5, 5}; //Rows, Cols
     public static boolean MONITOR_ORIENTATION = true; // true = horizontal; false = vertical
     public static String LOG_PATH = "logs/"; //Directory, where logs get stored (has to be created beforehand)
@@ -54,7 +54,9 @@ public class Config {
     public static int INFOTEXT_FONT_SIZE = 18;
     public static Color PAUSETEXT_COLOR = Color.white;
     public static int PAUSETEXT_FONT_SIZE = 22;
-    public static String PAUSETEXT = "Trial paused, press anywhere to continue";
+    public static String PAUSETEXT = "Trial Paused";
+    public static final String CONTINUESTRING = "Press anywhere to continue";
+    public static int PAUSETIME = 5;
 
     /**
      * General Fontstyle

@@ -114,15 +114,16 @@ public class TrialBlocks {
      */
     public void generateTrials() {
         if(!Config.RECIPROCAL) {
-            addTrial(1, 3, 5, 12, 10, 10);
-            addTrial(3, 1, 24, 14, 10, 10);
+            addTrial(1, 2, 5, 12, 10, 10);
+            addTrial(2, 1, 24, 14, 10, 10);
+            /*
             addTrial(1, 2, 24, 14, 10, 10);
             addTrial(2, 1, 24, 14, 10, 10);
-            addTrial(1, 3, 24, 14, 10, 10);
-            addTrial(3, 2, 24, 14, 10, 10);
-            addTrial(2, 3, 24, 14, 10, 10);
-            addTrial(3, 1, 24, 14, 10, 10);
-
+            addTrial(1, 2, 24, 14, 10, 10);
+            addTrial(2, 1, 24, 14, 10, 10);
+            addTrial(1, 2, 24, 14, 10, 10);
+            addTrial(2, 1, 24, 14, 10, 10);
+            */
             blocks.add(trials);
 
             generateBlocks();
@@ -238,7 +239,7 @@ public class TrialBlocks {
             blocks.add(nextBlock);
         }
         //Sort blocks
-        blocks.sort(Comparator.comparingInt(o -> o.get(0).getMonitorStart()));
+        //blocks.sort(Comparator.comparingInt(o -> o.get(0).getMonitorStart()));
 
         //TODO: delete Debug
         for(int i = 0; i < blocks.size(); i++) {

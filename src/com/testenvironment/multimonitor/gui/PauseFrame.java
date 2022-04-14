@@ -8,17 +8,21 @@ import javax.swing.*;
 import javax.swing.event.MouseInputListener;
 import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class PauseFrame extends JPanel implements MouseInputListener {
     Experiment experiment;
     TrialBlocks trialBlocks;
-
+    int timeLeft;
 
     public PauseFrame(Experiment experiment) {
         this.experiment = experiment;
         this.trialBlocks = TrialBlocks.getTrialblocks();
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
+        timeLeft = Config.PAUSETIME;
+        runTimer();
     }
 
     @Override
@@ -34,11 +38,37 @@ public class PauseFrame extends JPanel implements MouseInputListener {
         FontMetrics fontMetrics = g2d.getFontMetrics(font);
 
         int x = (this.getWidth() - fontMetrics.stringWidth(Config.PAUSETEXT)) / 2;
+        int xContinue = (this.getWidth() - fontMetrics.stringWidth(Config.CONTINUESTRING)) / 2;
+        int xCountDown = (this.getWidth() - fontMetrics.stringWidth(String.valueOf(timeLeft))) / 2;
         int y = (this.getHeight() - fontMetrics.getHeight()) / 2 + fontMetrics.getAscent();
 
         g2d.setColor(Config.PAUSETEXT_COLOR);
         g2d.setFont(font);
-        g2d.drawString(Config.PAUSETEXT, x, y);
+        if(timeLeft > 0) {
+            g2d.drawString(Config.PAUSETEXT, x, y);
+            g2d.drawString(String.valueOf(timeLeft), xCountDown, y + fontMetrics.getAscent() * 2);
+
+        }
+        else {
+            g2d.drawString(Config.CONTINUESTRING, x, y);
+        }
+    }
+
+    private void runTimer() {
+        Timer timer = new Timer();
+
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                timeLeft--;
+                if(timeLeft < 0) {
+                    timer.cancel();
+                } else {
+                    repaint();
+                }
+            }
+        }, 0, 1000);
+
     }
 
     @Override
@@ -52,10 +82,12 @@ public class PauseFrame extends JPanel implements MouseInputListener {
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        System.out.println("Mouse released");
-        trialBlocks.setPauseTrial(false);
-        trialBlocks.setResumeTrial(true);
-        experiment.drawFrames();
+        if(timeLeft < 1) {
+            System.out.println("Mouse released");
+            trialBlocks.setPauseTrial(false);
+            trialBlocks.setResumeTrial(true);
+            experiment.drawFrames();
+        }
     }
 
     @Override
