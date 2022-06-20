@@ -14,6 +14,8 @@ import javax.swing.*;
 import javax.swing.event.MouseInputListener;
 import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.awt.font.FontRenderContext;
+import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -72,6 +74,8 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
                 int d = ((StartField) draw).getTlY();
                 int a = draw.getWidth();
                 int b = draw.getHeight();
+                Font startFont = new Font(Config.FONT_STYLE, Font.BOLD, Config.STARTFIELD_FONT_SIZE);
+                FontRenderContext frc = new FontRenderContext(new AffineTransform(), true, true); //to get FontHeight
 
                 g2d.setColor(Config.START_BACKGROUNDCOLOR);
                 g2d.fillRect(0, 0, this.getWidth(), this.getHeight());
@@ -79,8 +83,10 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
                 g2d.setColor(startColor);
                 g2d.fillRect(c, d, a, b);
                 g2d.setColor(Config.STARTFIELD_COLOR_TEXT);
-                g2d.setFont(new Font(Config.FONT_STYLE, Font.PLAIN, Config.STARTFIELD_FONT_SIZE));
-                g2d.drawString("Start", c + a / 4, d + (3 * b / 4));
+                g2d.setFont(startFont);
+                g2d.drawString("Start",
+                        (float) (c +  (a / 2 - (startFont.getStringBounds("Start", frc).getWidth()) / 2)),
+                        (float) (d + (b / 2 + (startFont.getStringBounds("Start", frc).getHeight()) / 2)));
             } else if (draw instanceof GoalCircle) {
                 g2d.setColor(Config.GOAL_BACKGROUNDCOLOR);
                 g2d.fillRect(0, 0, this.getWidth(), this.getHeight());
@@ -112,36 +118,43 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
         int windowHeight = currentFrame.getHeight();
         int monitorWidth = currentFrame.getGraphicsConfiguration().getDevice().getDisplayMode().getWidth(); //Get Monitorwidth where currentFrame is placed
         int monitorHeight = currentFrame.getGraphicsConfiguration().getDevice().getDisplayMode().getHeight(); //Get Monitorheight where currentFrame is placed
+        boolean playError = true;
 
-        for (JComponent dr : drawables) {
-            if (dr instanceof StartField) {
-                isInStart = ((StartField) dr).isInside(e.getX(), e.getY());
-                if (isInStart) {
-                    if (!testStart) {
-                        testStart = true;
+        if(e.getButton() == MouseEvent.BUTTON1) {
+            for (JComponent dr : drawables) {
+                if (dr instanceof StartField) {
+                    isInStart = ((StartField) dr).isInside(e.getX(), e.getY());
+                    if (isInStart) {
+                        playError = false;
+                        if (!testStart) {
+                            testStart = true;
 
-                        startColor = Config.STARTFIELD_PRESSED_COLOR;
-                        repaint();
+                            startColor = Config.STARTFIELD_PRESSED_COLOR;
+                            repaint();
 
-                        setStartLogger(e, monitorName, dr);
-                        logger.setStartWindowWidth(windowWidth);
-                        logger.setStartWindowHeight(windowHeight);
-                        logger.setStartMonitorHeight(monitorHeight);
-                        logger.setStartMonitorWidth(monitorWidth);
+                            setStartLogger(e, monitorName, dr);
+                            logger.setStartWindowWidth(windowWidth);
+                            logger.setStartWindowHeight(windowHeight);
+                            logger.setStartMonitorHeight(monitorHeight);
+                            logger.setStartMonitorWidth(monitorWidth);
+                        }
                     }
+                } else if (dr instanceof GoalCircle) {
+                    playError = false;
+                    isInGoal = ((GoalCircle) dr).isInside(e.getX(), e.getY());
+                    checkGoalConditions(e, isInGoal, monitorName, windowWidth, windowHeight, monitorWidth, monitorHeight, dr);
+                } else if (dr instanceof GoalRect) {
+                    playError = false;
+                    isInGoal = ((GoalRect) dr).isInside(e.getX(), e.getY());
+                    checkGoalConditions(e, isInGoal, monitorName, windowWidth, windowHeight, monitorWidth, monitorHeight, dr);
                 }
-            } else if (dr instanceof GoalCircle) {
-                isInGoal = ((GoalCircle) dr).isInside(e.getX(), e.getY());
-                checkGoalConditions(e, isInGoal, monitorName, windowWidth, windowHeight, monitorWidth, monitorHeight, dr);
-            } else if (dr instanceof GoalRect) {
-                isInGoal = ((GoalRect) dr).isInside(e.getX(), e.getY());
-                checkGoalConditions(e, isInGoal, monitorName, windowWidth, windowHeight, monitorWidth, monitorHeight, dr);
+                setMouseLogger(e, currentFrame);
+                mouseLogger.setMouseReleased(1);
+                mouseLogger.generateLogString();
             }
-            setMouseLogger(e, currentFrame);
-            mouseLogger.setMouseReleased(1);
-            mouseLogger.generateLogString();
         }
-
+        if(playError)
+            playError();
     }
 
     /**

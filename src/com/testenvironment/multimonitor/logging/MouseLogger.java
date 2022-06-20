@@ -15,6 +15,8 @@ public class MouseLogger {
     private static MouseLogger instance = null;
     private final int participant;
     private PrintWriter logFile;
+    private String fileName;
+
     private int trialNumber;
     private int blockNumber;
     private int monitorNr;
@@ -32,6 +34,7 @@ public class MouseLogger {
     private int trialNumberInSet;
 
     private MouseLogger() {
+        this.fileName = Config.LOG_PATH + Config.EVENTS_LOG + "_" + Config.TESTTYPE + "_" + Config.USER_ID + ".txt";
         createLogFile();
         writeToLog(createHeaderString());
         this.participant = Config.USER_ID;
@@ -61,10 +64,11 @@ public class MouseLogger {
 
     public void createLogFile() {
         try {
-            while (new File(Config.LOG_PATH + Config.MOUSE_LOG + Config.USER_ID + ".txt").exists()) {
-                Config.USER_ID++;
+            while (new File(this.fileName).exists()) {
+                Config.USER_ID += 100;
+                this.fileName = Config.LOG_PATH + Config.TRIALS_LOG + "_" + Config.TESTTYPE + "_" + Config.USER_ID + ".txt";
             }
-            logFile = new PrintWriter(new FileWriter(Config.LOG_PATH + Config.MOUSE_LOG + Config.USER_ID + ".txt"));
+            logFile = new PrintWriter(new FileWriter(this.fileName));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -120,9 +124,8 @@ public class MouseLogger {
     }
 
     public void writeToLog(String log) {
-        String fileName = Config.LOG_PATH + Config.MOUSE_LOG + Config.USER_ID + ".txt";
         log = log + "\n";
-        Path path = Paths.get(fileName);
+        Path path = Paths.get(this.fileName);
 
         try {
             Files.writeString(path, log, StandardOpenOption.CREATE, StandardOpenOption.APPEND);

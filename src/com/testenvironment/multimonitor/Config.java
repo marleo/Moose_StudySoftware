@@ -7,16 +7,21 @@ public class Config {
     /**
      * Logging
      */
-    public static int USER_ID = 1; //increments + 1 everytime the program gets opened
-    public static int BLOCKS = 15; //Number of TrialBlocks | IF 0, generates all possible combinations for the given trials
-    public static int PAUSE_AFTER_BLOCKNR = 2;
+    public static int USER_ID = 100; //increments + 100 everytime the program gets opened
+    public static int BLOCKS = 3; //Number of TrialBlocks | IF 0, generates all possible combinations for the given trials
+    public static int PAUSE_AFTER_BLOCKNR = 1;
     public static int[] MONITOR_ZONES = {5, 5}; //Rows, Cols
     public static boolean MONITOR_ORIENTATION = true; // true = horizontal; false = vertical
     public static String LOG_PATH = "logs/"; //Directory, where logs get stored (has to be created beforehand)
-    public static String MOUSE_LOG = "events_";
-    public static String MOOSE_LOG = "moose_";
+    public static String EVENTS_LOG = "Events";
+    public static String TRIALS_LOG = "Trials";
     public static String TESTTYPE = "MOOSE";
-    public static Boolean RECIPROCAL = false;
+    public static String TRIALTYPE = "Hardcoded"; // Options: Random, Reciprocal, Hardcoded
+    public static String TRIALSEQUENCE = "Sequence18_1_MonitorJump"; //Options: Sequence72_Alternative_1, Sequence72_Alternative_2,
+                                             //Sequence18_1_MonitorJump, Sequence18_2_MonitorJump
+    public static Boolean IS_SEEDED = false; //true, if every run should generate the same order of blocks
+    public static Boolean ERROR_TO_END = false; // if true, trial gets pushed to end of block, else it's the next one.
+    public static long SEED = 135495419; //seed, if IS_SEEDED is true
 
     /**
      * Testpanel
@@ -41,9 +46,9 @@ public class Config {
     public static Color STARTFIELD_COLOR = new Color(8, 161, 54);
     public static Color STARTFIELD_PRESSED_COLOR = new Color(4, 90, 29);
     public static Color STARTFIELD_COLOR_TEXT = Color.WHITE;
-    public static int STARTFIELD_FONT_SIZE = 12;
-    public static int STARTFIELD_HEIGHT = 20;
-    public static int STARTFIELD_WIDTH = 50;
+    public static int STARTFIELD_FONT_SIZE = 14;
+    public static int STARTFIELD_HEIGHT = 76;
+    public static int STARTFIELD_WIDTH = 76;
 
     /**
      * Text in upper left corner
@@ -54,8 +59,8 @@ public class Config {
     public static int INFOTEXT_FONT_SIZE = 18;
     public static Color PAUSETEXT_COLOR = Color.white;
     public static int PAUSETEXT_FONT_SIZE = 22;
-    public static String PAUSETEXT = "Trial Paused";
-    public static final String CONTINUESTRING = "Press anywhere to continue";
+    public static String PAUSETEXT = "Trials pausiert";
+    public static final String CONTINUESTRING = "Klicke irgendwo, um fortzufahren";
     public static int PAUSETIME = 5;
 
     /**

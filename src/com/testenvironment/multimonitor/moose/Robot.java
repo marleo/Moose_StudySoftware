@@ -65,6 +65,7 @@ public class Robot {
                     incrementSwipeCount();
                 }
             }
+            /*
             case "swipeUp" -> {
                 logger.incUpSwipes();
                 if (currentScreenIndex + 1 < gs.length) {
@@ -97,6 +98,7 @@ public class Robot {
                     }
                 }
             }
+            */
             case "tap" -> {
                 java.awt.Robot robot = new java.awt.Robot();
                 robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);

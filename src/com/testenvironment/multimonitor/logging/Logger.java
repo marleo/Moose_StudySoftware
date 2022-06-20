@@ -18,6 +18,7 @@ public class Logger {
     private static Logger instance = null;
     private PrintWriter logFile;
     private final String testtype;
+    private String fileName;
 
     private int participant;
     private int blockNumber;
@@ -65,6 +66,7 @@ public class Logger {
 
 
     private Logger() {
+        this.fileName = Config.LOG_PATH + Config.TRIALS_LOG + "_" + Config.TESTTYPE + "_" + Config.USER_ID + ".txt";
         createLogFile();
         writeToLog(createHeaderString());
         this.participant = Config.USER_ID;
@@ -122,10 +124,11 @@ public class Logger {
 
     public void createLogFile() {
         try {
-            while (new File(Config.LOG_PATH + Config.MOOSE_LOG + Config.USER_ID + ".txt").exists()) {
-                Config.USER_ID++;
+            while (new File(this.fileName).exists()) {
+                Config.USER_ID += 100;
+                this.fileName = Config.LOG_PATH + Config.TRIALS_LOG + "_" + Config.TESTTYPE + "_" + Config.USER_ID + ".txt";
             }
-            logFile = new PrintWriter(new FileWriter(Config.LOG_PATH + Config.MOOSE_LOG + Config.USER_ID + ".txt"));
+            logFile = new PrintWriter(new FileWriter(this.fileName));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -225,9 +228,8 @@ public class Logger {
     }
 
     public void writeToLog(String log) {
-        String fileName = Config.LOG_PATH + Config.MOOSE_LOG + Config.USER_ID + ".txt";
         log = log + "\n";
-        Path path = Paths.get(fileName);
+        Path path = Paths.get(this.fileName);
 
         try {
             Files.writeString(path, log, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
