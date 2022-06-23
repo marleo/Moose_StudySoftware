@@ -63,7 +63,7 @@ public class Experiment extends JPanel {
                 playFinished();
             }
 
-            if (currentBlock >= blocks.size() || currentBlock >= Config.BLOCKS) {
+            if (currentBlock >= blocks.size() || currentBlock >= Config.BLOCKS)  {
                 logger.endLog();
                 mouseLogger.endLog();
                 System.exit(0);

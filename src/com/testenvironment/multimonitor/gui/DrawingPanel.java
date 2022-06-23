@@ -153,6 +153,11 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
                 mouseLogger.generateLogString();
             }
         }
+        /* TODO: REMOVE DEBUG #############################################################################################*/
+        else if(e.getButton() == MouseEvent.BUTTON3) {
+            System.out.println("RIGHTCLICK");
+            experiment.drawFrames();
+        }
         if(playError)
             playError();
     }

@@ -44,7 +44,12 @@ public class Robot {
                     }
                 }
                 if (nextScreen != null) {
-                    fixedMouseMoveHorizontal(nextScreen, prevScreenWidths);
+                    if(Config.JUMPTOMID) {
+                        fixedMouseMoveHorizontal(nextScreen, prevScreenWidths);
+                    } else {
+                        java.awt.Robot robot = new java.awt.Robot(nextScreen);
+                        fixCurrentMonitorRes(robot, prevScreenWidths + nextScreen.getDisplayMode().getWidth(), MouseInfo.getPointerInfo().getLocation().y);
+                    }
                     drawCustomMouse();
                     incrementSwipeCount();
                 }
@@ -60,6 +65,12 @@ public class Robot {
                     }
                 }
                 if (nextScreen != null) {
+                    if(Config.JUMPTOMID) {
+                        fixedMouseMoveHorizontal(nextScreen, prevScreenWidths);
+                    } else {
+                        java.awt.Robot robot = new java.awt.Robot(nextScreen);
+                        fixCurrentMonitorRes(robot, prevScreenWidths + nextScreen.getDisplayMode().getWidth(), MouseInfo.getPointerInfo().getLocation().y);
+                    }
                     fixedMouseMoveHorizontal(nextScreen, prevScreenWidths);
                     drawCustomMouse();
                     incrementSwipeCount();
