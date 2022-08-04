@@ -16,13 +16,13 @@ public class Config {
     public static String EVENTS_LOG = "Events";
     public static String TRIALS_LOG = "Trials";
     public static String TESTTYPE = "MOOSE";
-    public static String TRIALTYPE = "Hardcoded"; // Options: Random, Reciprocal, Hardcoded
+    public static String TRIALTYPE = "Random"; // Options: Random, Reciprocal, Hardcoded
     public static String TRIALSEQUENCE = "Sequence72_Alternative_1"; //Options: Sequence72_Alternative_1, Sequence72_Alternative_2,
                                              //Sequence18_1_MonitorJump, Sequence18_2_MonitorJump
     public static Boolean IS_SEEDED = false; //true, if every run should generate the same order of blocks
     public static Boolean ERROR_TO_END = false; // if true, trial gets pushed to end of block, else it's the next one.
     public static long SEED = 135495419; //seed, if IS_SEEDED is true
-    public static boolean JUMPTOMID = false; // if true, the mouse jumps to the middle of the monitor
+    public static boolean JUMPTOMID = true; // if true, the mouse jumps to the middle of the monitor
     /**
      * Testpanel
      */

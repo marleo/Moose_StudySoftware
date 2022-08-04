@@ -1,5 +1,7 @@
 package com.testenvironment.multimonitor.moose;
 
+import com.testenvironment.multimonitor.logging.Logger;
+
 import java.awt.*;
 import java.io.*;
 import java.net.ServerSocket;
@@ -19,6 +21,7 @@ public class Server {
     private Socket socket;
     private PrintWriter outPW;
     private BufferedReader inBR;
+    private final Logger logger;
 
     private ExecutorService executor;
 
@@ -86,6 +89,11 @@ public class Server {
                         if (memo.getAction().equals("SCROLL")) {
                             System.out.println(memo);
                             Robot.getRobot().moveRobot(memo.getMode());
+                            logger.setJumpMode(memo.getMode());
+                            if(memo.getMode().equals("tapLeft") || memo.getMode().equals("tapRight")) {
+                                logger.setTapJumpX(memo.getValue1Int());
+                                logger.setTapJumpY(memo.getValue2Int());
+                            }
                         }
 
                     } else {
@@ -116,7 +124,7 @@ public class Server {
      */
     public Server() {
         String TAG = NAME;
-
+        logger = Logger.getLogger();
         // Init executerService for running threads
         executor = Executors.newCachedThreadPool();
     }

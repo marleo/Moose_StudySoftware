@@ -123,8 +123,8 @@ public class TrialBlocks {
 //            addTrial(2, 3, 13, 14, 10, 10);
 //            addTrial(3, 1, 15, 16, 10, 10);
 
-            addTrial(1, 2, 24, 14, 38, 38);
-            addTrial(2, 1, 24, 14, 38, 38);
+            addTrial(1, 2, 1, 14, 38, 38);
+            addTrial(2, 1, 1, 14, 38, 38);
 
             blocks.add(trials);
 
