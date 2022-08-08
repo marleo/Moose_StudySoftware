@@ -6,6 +6,7 @@ import com.testenvironment.multimonitor.experiment.TrialBlocks;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class ExperimentFrame extends JFrame {
 
@@ -15,7 +16,9 @@ public class ExperimentFrame extends JFrame {
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice[] gs = ge.getScreenDevices();
         TrialBlocks trialblocks = TrialBlocks.getTrialblocks();
-
+        if(Objects.equals(Config.TRIALTYPE, "Hardcoded")) {
+            Config.MONITOR_ZONES = new int[]{4, 6};
+        }
         /*
             Generate Frames
          */

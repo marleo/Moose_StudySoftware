@@ -32,8 +32,10 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
     private final TrialBlocks trialblock;
     private final Constellation currentTrial;
     private Color startColor;
+    private int debugCount;
 
     public DrawingPanel(Experiment experiment, ArrayList<JComponent> drawables) {
+        this.debugCount = 0;
         this.drawables = drawables;
         this.experiment = experiment;
         testStart = false;
@@ -154,9 +156,31 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
             }
         }
         /* TODO: REMOVE DEBUG #############################################################################################*/
-        else if(e.getButton() == MouseEvent.BUTTON3) {
+        else if(e.getButton() == MouseEvent.BUTTON3 && Config.DEBUG) {
             System.out.println("RIGHTCLICK");
-            experiment.drawFrames();
+            //experiment.drawFrames();
+            try {
+                Robot robot = new Robot(currentFrame.getGraphicsConfiguration().getDevice());
+                switch (this.debugCount) {
+                    case 0 -> {
+                        robot.mouseMove(960, monitorHeight / 2);
+                        System.out.println("Move to x 0");
+                        this.debugCount++;
+                    }
+                    case 1 -> {
+                        robot.mouseMove(2880, monitorHeight / 2);
+                        System.out.println("Move to x 2880");
+                        this.debugCount++;
+                    }
+                    case 2 -> {
+                        robot.mouseMove(4800, monitorHeight / 2);
+                        System.out.println("Move to x 3840");
+                        this.debugCount = 0;
+                    }
+                }
+            } catch (AWTException ex) {
+                ex.printStackTrace();
+            }
         }
         if(playError)
             playError();
@@ -245,9 +269,9 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        if (testStart) {
-            JFrame currentFrame = (JFrame) SwingUtilities.getRoot(this);
+        JFrame currentFrame = (JFrame) SwingUtilities.getRoot(this);
 
+        if (testStart) {
             setMouseLogger(e, currentFrame);
             mouseLogger.setMouseMoved(1);
             mouseLogger.generateLogString();

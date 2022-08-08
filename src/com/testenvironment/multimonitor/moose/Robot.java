@@ -30,7 +30,6 @@ public class Robot {
         int currentScreenIndex = Arrays.asList(gs).indexOf(MouseInfo.getPointerInfo().getDevice());
         GraphicsDevice nextScreen = null;
         int prevScreenWidths = 0;
-        int prevScreenHeights = 0;
 
         switch (swipeDirection) {
             case "swipeRight" -> {
@@ -47,8 +46,12 @@ public class Robot {
                     if(Config.JUMPTOMID) {
                         fixedMouseMoveHorizontal(nextScreen, prevScreenWidths);
                     } else {
+                        int currentMouseX = MouseInfo.getPointerInfo().getLocation().x;
+                        int currentMouseY = MouseInfo.getPointerInfo().getLocation().y;
+
                         java.awt.Robot robot = new java.awt.Robot(nextScreen);
-                        fixCurrentMonitorRes(robot, prevScreenWidths + nextScreen.getDisplayMode().getWidth(), MouseInfo.getPointerInfo().getLocation().y);
+
+                        fixCurrentMonitorRes(robot, nextScreen.getDisplayMode().getWidth() + currentMouseX, currentMouseY);
                     }
                     drawCustomMouse();
                     incrementSwipeCount();
@@ -68,10 +71,13 @@ public class Robot {
                     if(Config.JUMPTOMID) {
                         fixedMouseMoveHorizontal(nextScreen, prevScreenWidths);
                     } else {
+                        int currentMouseX = MouseInfo.getPointerInfo().getLocation().x;
+                        int currentMouseY = MouseInfo.getPointerInfo().getLocation().y;
+
                         java.awt.Robot robot = new java.awt.Robot(nextScreen);
-                        fixCurrentMonitorRes(robot, prevScreenWidths + nextScreen.getDisplayMode().getWidth(), MouseInfo.getPointerInfo().getLocation().y);
+                        fixCurrentMonitorRes(robot, currentMouseX - nextScreen.getDisplayMode().getWidth(), currentMouseY);
                     }
-                    fixedMouseMoveHorizontal(nextScreen, prevScreenWidths);
+                    //fixedMouseMoveHorizontal(nextScreen, prevScreenWidths);
                     drawCustomMouse();
                     incrementSwipeCount();
                 }
@@ -155,6 +161,7 @@ public class Robot {
         int x = prevScreenWidths + width/2;
         int y = height/2 + Math.abs(maxHeight - nextScreen.getDisplayMode().getHeight());
 
+        System.out.println("*********** X : " + x + " ****************");
         robot.mouseMove(x, maxHeight);
 
         for(int count = 0;(MouseInfo.getPointerInfo().getLocation().getX() != x || //First move it to the correct screen

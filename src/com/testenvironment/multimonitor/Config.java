@@ -7,6 +7,7 @@ public class Config {
     /**
      * Logging
      */
+    public static boolean DEBUG = true;
     public static int USER_ID = 100; //increments + 100 everytime the program gets opened
     public static int BLOCKS = 3; //Number of TrialBlocks | IF 0, generates all possible combinations for the given trials
     public static int PAUSE_AFTER_BLOCKNR = 1;
