@@ -32,8 +32,11 @@ public class Robot {
         int prevScreenWidths = 0;
 
         switch (swipeDirection) {
-            case "swipeRight" -> {
-                logger.incRightSwipe();
+
+            case "swipeRight", "tapRight" -> {
+                if(swipeDirection.equals("swipeRight")) {
+                    logger.incRightSwipe();
+                }
                 if (currentScreenIndex + 1 < gs.length) {
                     nextScreen = gs[currentScreenIndex + 1];
                     for (GraphicsDevice g : gs) {
@@ -57,8 +60,10 @@ public class Robot {
                     incrementSwipeCount();
                 }
             }
-            case "swipeLeft" -> {
-                logger.incLeftSwipe();
+            case "swipeLeft", "tapLeft" -> {
+                if(swipeDirection.equals("swipeLeft")) {
+                    logger.incLeftSwipe();
+                }
                 if (currentScreenIndex - 1 >= 0) {
                     nextScreen = gs[currentScreenIndex - 1];
                     for (GraphicsDevice g : gs) {

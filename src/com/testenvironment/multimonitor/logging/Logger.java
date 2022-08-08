@@ -63,6 +63,9 @@ public class Logger {
     private final boolean isTargetCircle;
     private int targetWidth;
     private int targetHeight;
+    private String jumpMode;
+    private int tapJumpX;
+    private int tapJumpY;
 
 
     private Logger() {
@@ -113,6 +116,9 @@ public class Logger {
         this.trialTime = 0;
         this.pixelSize = 0;
         this.distanceMM = 0;
+        this.jumpMode = "";
+        this.tapJumpX = 0;
+        this.tapJumpY = 0;
     }
 
     public static Logger getLogger() {
@@ -170,6 +176,9 @@ public class Logger {
                 "targetPointPressedY" + ";" +
                 "targetPointReleasedX" + ";" +
                 "targetPointReleasedY" + ";" +
+                "jumpMode" + ";" +
+                "tapJumpX" + ";" +
+                "tapJumpY" + ";" +
                 "leftSwipes" + ";" +
                 "rightSwipes" + ";" +
                 "upSwipes" + ";" +
@@ -216,6 +225,9 @@ public class Logger {
                 targetPointReleasedY + ";" +
                 targetPointPressedX + ";" +
                 targetPointPressedY + ";" +
+                jumpMode + ";" +
+                tapJumpX + ";" +
+                tapJumpY + ";" +
                 leftSwipes + ";" +
                 rightSwipes + ";" +
                 upSwipes + ";" +
@@ -320,6 +332,17 @@ public class Logger {
                 setDistanceMM(calculateEuclidianDistance(distX, distY) * pixelSize);
             }
         }
+    }
+    public void setJumpMode(String jumpMode) {
+        this.jumpMode = jumpMode;
+    }
+
+    public void setTapJumpX(int tapJumpX) {
+        this.tapJumpX = tapJumpX;
+    }
+
+    public void setTapJumpY(int tapJumpY) {
+        this.tapJumpY = tapJumpY;
     }
 
     public void setStartEndDistanceMM() {
