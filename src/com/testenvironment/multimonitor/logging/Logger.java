@@ -66,6 +66,12 @@ public class Logger {
     private String jumpMode;
     private int tapJumpX;
     private int tapJumpY;
+    private int tapCount;
+    private int monitorJumps;
+    private int leftTaps;
+    private int rightTaps;
+    private int upSlides;
+    private int downSlides;
 
 
     private Logger() {
@@ -119,6 +125,12 @@ public class Logger {
         this.jumpMode = "";
         this.tapJumpX = 0;
         this.tapJumpY = 0;
+        this.tapCount = 0;
+        this.monitorJumps = 0;
+        this.leftTaps = 0;
+        this.rightTaps = 0;
+        this.upSlides = 0;
+        this.downSlides = 0;
     }
 
     public static Logger getLogger() {
@@ -177,6 +189,12 @@ public class Logger {
                 "targetPointReleasedX" + ";" +
                 "targetPointReleasedY" + ";" +
                 "jumpMode" + ";" +
+                "leftTaps" + ";" +
+                "rightTaps" + ";" +
+                "upSlides" + ";" +
+                "downSlides" + ";" +
+                "monitorJumps" + ";" +
+                "tapCount" + ";" +
                 "tapJumpX" + ";" +
                 "tapJumpY" + ";" +
                 "leftSwipes" + ";" +
@@ -226,6 +244,12 @@ public class Logger {
                 targetPointPressedX + ";" +
                 targetPointPressedY + ";" +
                 jumpMode + ";" +
+                leftTaps + ";" +
+                rightTaps + ";" +
+                upSlides + ";" +
+                downSlides + ";" +
+                monitorJumps + ";" +
+                tapCount + ";" +
                 tapJumpX + ";" +
                 tapJumpY + ";" +
                 leftSwipes + ";" +
@@ -333,6 +357,40 @@ public class Logger {
             }
         }
     }
+
+    public void incLeftTap() {
+        this.leftTaps++;
+    }
+    public void incRightTap() {
+        this.rightTaps++;
+    }
+
+    public void incUpSlide() {
+        this.upSlides++;
+    }
+    public void incDownSlide() {
+        this.downSlides++;
+    }
+
+    public void resetLeftTaps() {
+        this.leftTaps = 0;
+    }
+
+    public void resetRightTaps() {
+        this.rightTaps = 0;
+    }
+
+    public void resetUpSlides() {
+        this.upSlides = 0;
+    }
+
+    public void resetDownSlides() {
+        this.downSlides = 0;
+    }
+
+
+    public void incTapCount() { this.tapCount++; }
+
     public void setJumpMode(String jumpMode) {
         this.jumpMode = jumpMode;
     }
@@ -368,6 +426,12 @@ public class Logger {
     public void incDownSwipes() {
         this.downSwipes++;
     }
+
+    public void incMonitorJumps() { this.monitorJumps++; }
+
+    public void resetTapCount() {this.tapCount = 0;}
+
+    public void resetMonitorJumps() { this.monitorJumps = 0; }
 
     public void resetRightSwipes() {
         this.rightSwipes = 0;

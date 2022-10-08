@@ -31,12 +31,16 @@ public class Robot {
         GraphicsDevice nextScreen = null;
         int prevScreenWidths = 0;
 
-        switch (swipeDirection) {
+        System.out.println("####### moveRobot");
 
-            case "swipeRight", "tapRight" -> {
-                if(swipeDirection.equals("swipeRight")) {
-                    logger.incRightSwipe();
-                }
+        switch (swipeDirection) {
+            case "swipeRight", "tapRight", "slideUp" -> {
+                System.out.println("####### JUMP RIGHT");
+                    switch (swipeDirection) {
+                        case "swipeRight" -> logger.incRightSwipe();
+                        case "tapRight" -> logger.incRightTap();
+                        case "slideUp" -> logger.incUpSlide();
+                    }
                 if (currentScreenIndex + 1 < gs.length) {
                     nextScreen = gs[currentScreenIndex + 1];
                     for (GraphicsDevice g : gs) {
@@ -56,14 +60,19 @@ public class Robot {
 
                         fixCurrentMonitorRes(robot, nextScreen.getDisplayMode().getWidth() + currentMouseX, currentMouseY);
                     }
+                    logger.incMonitorJumps();
                     drawCustomMouse();
                     incrementSwipeCount();
                 }
             }
-            case "swipeLeft", "tapLeft" -> {
-                if(swipeDirection.equals("swipeLeft")) {
-                    logger.incLeftSwipe();
-                }
+            case "swipeLeft", "tapLeft", "slideDown" -> {
+                System.out.println("####### JUMP LEFT");
+
+                switch (swipeDirection) {
+                        case "swipeLeft" -> logger.incLeftSwipe();
+                        case "tapLeft" -> logger.incLeftTap();
+                        case "slideDown" -> logger.incDownSlide();
+                    }
                 if (currentScreenIndex - 1 >= 0) {
                     nextScreen = gs[currentScreenIndex - 1];
                     for (GraphicsDevice g : gs) {
@@ -83,44 +92,11 @@ public class Robot {
                         fixCurrentMonitorRes(robot, currentMouseX - nextScreen.getDisplayMode().getWidth(), currentMouseY);
                     }
                     //fixedMouseMoveHorizontal(nextScreen, prevScreenWidths);
+                    logger.incMonitorJumps();
                     drawCustomMouse();
                     incrementSwipeCount();
                 }
             }
-            /*
-            case "swipeUp" -> {
-                logger.incUpSwipes();
-                if (currentScreenIndex + 1 < gs.length) {
-                    nextScreen = gs[currentScreenIndex + 1];
-                    for (GraphicsDevice g : gs) {
-                        if (g == nextScreen)
-                            break;
-                        prevScreenHeights += g.getDisplayMode().getHeight();
-                    }
-                    if (nextScreen != null) {
-                        fixedMouseMoveVertical(nextScreen, prevScreenHeights);
-                        drawCustomMouse();
-                        incrementSwipeCount();
-                    }
-                }
-            }
-            case "swipeDown" -> {
-                logger.incDownSwipes();
-                if (currentScreenIndex - 1 >= 0) {
-                    nextScreen = gs[currentScreenIndex - 1];
-                    for (GraphicsDevice g : gs) {
-                        if (g == nextScreen)
-                            break;
-                        prevScreenHeights += g.getDisplayMode().getHeight();
-                    }
-                    if (nextScreen != null) {
-                        fixedMouseMoveVertical(nextScreen, prevScreenHeights);
-                        drawCustomMouse();
-                        incrementSwipeCount();
-                    }
-                }
-            }
-            */
             case "tap" -> {
                 java.awt.Robot robot = new java.awt.Robot();
                 robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
@@ -203,15 +179,19 @@ public class Robot {
             cursorImg.add(toolkit.getImage(path));
         }
 
-        SwingUtilities.invokeLater(() -> {
-            changeCursor(cursorImg);
-            Collections.reverse(cursorImg);
-            changeCursor(cursorImg);
+        if(!Config.ANIMATION_RUNNING) {
+            SwingUtilities.invokeLater(() -> {
+                Config.ANIMATION_RUNNING = true;
+                changeCursor(cursorImg);
+                Collections.reverse(cursorImg);
+                changeCursor(cursorImg);
 
-            for(Frame frame : Frame.getFrames()) {
-                frame.setCursor(Cursor.getDefaultCursor());
-            }
-        });
+                for(Frame frame : Frame.getFrames()) {
+                    frame.setCursor(Cursor.getDefaultCursor());
+                }
+                Config.ANIMATION_RUNNING = false;
+            });
+        }
     }
 
     private void changeCursor(ArrayList<Image> cursorImg) {

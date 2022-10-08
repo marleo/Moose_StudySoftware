@@ -89,7 +89,8 @@ public class Server {
                         if (memo.getAction().equals("SCROLL")) {
                             System.out.println(memo);
                             Robot.getRobot().moveRobot(memo.getMode());
-                            logger.setJumpMode(memo.getMode());
+                            if(!memo.getMode().equals("tap"))
+                                logger.setJumpMode(memo.getMode());
                             if(memo.getMode().equals("tapLeft") || memo.getMode().equals("tapRight")) {
                                 logger.setTapJumpX(memo.getValue1Int());
                                 logger.setTapJumpY(memo.getValue2Int());
