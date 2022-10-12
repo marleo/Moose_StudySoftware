@@ -116,8 +116,17 @@ public class DrawingPanel extends JPanel implements MouseInputListener {
         boolean isInStart, isInGoal;
         JFrame currentFrame = (JFrame) SwingUtilities.getRoot(this);
         String monitorName = currentFrame.getTitle();
-        int windowWidth = currentFrame.getWidth();
-        int windowHeight = currentFrame.getHeight();
+        int windowWidth = 0;
+        int windowHeight = 0;
+        if(!Config.FULLSCREEN) { //If window fullscreen, windowsize is 16px wider than monitorwidth, because of window decorations!
+            Dimension windowSize = currentFrame.getSize();
+            windowWidth = windowSize.width;
+            windowHeight = windowSize.height;
+        } else {
+            windowWidth = currentFrame.getGraphicsConfiguration().getDevice().getDisplayMode().getWidth();
+            windowHeight = currentFrame.getGraphicsConfiguration().getDevice().getDisplayMode().getHeight();
+        }
+
         int monitorWidth = currentFrame.getGraphicsConfiguration().getDevice().getDisplayMode().getWidth(); //Get Monitorwidth where currentFrame is placed
         int monitorHeight = currentFrame.getGraphicsConfiguration().getDevice().getDisplayMode().getHeight(); //Get Monitorheight where currentFrame is placed
         boolean playError = true;
